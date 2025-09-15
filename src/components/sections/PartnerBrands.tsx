@@ -29,14 +29,14 @@ const partnerLogos = [
 
 export default function PartnerBrands() {
   return (
-    <section className="py-16 bg-nile-blue">
+    <section className="py-16 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-graffiti font-black mb-4 text-white">
+          <h2 className="text-4xl md:text-5xl font-graffiti font-black mb-4 text-nile-blue">
             Nossos <span className="text-gradient-sunset">Parceiros</span>
           </h2>
-          <p className="text-lg text-white/80 max-w-2xl mx-auto font-urban">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto font-urban">
             Trabalhamos com as melhores marcas do mercado para trazer produtos de alta qualidade
           </p>
         </div>
@@ -50,14 +50,14 @@ export default function PartnerBrands() {
           gap={60}
           pauseOnHover={true}
           fadeOut={true}
-          fadeOutColor="#043E52"
+          fadeOutColor="#FFFFFF"
           scaleOnHover={true}
           className="my-8"
         />
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <p className="text-white/80 mb-6 font-urban">
+          <p className="text-gray-600 mb-6 font-urban">
             Quer ser nosso parceiro? Entre em contato conosco
           </p>
           <button className="star-border-button">

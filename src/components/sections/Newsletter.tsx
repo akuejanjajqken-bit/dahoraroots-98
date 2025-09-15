@@ -25,7 +25,7 @@ export default function Newsletter() {
 
   if (isSubscribed) {
     return (
-      <section className="py-16 bg-gradient-to-br from-pine/5 to-sunset-orange/5 relative overflow-hidden">
+      <section className="py-16 bg-white relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-0 w-64 h-64 bg-pine rounded-full -translate-x-32 -translate-y-32" />
@@ -38,11 +38,11 @@ export default function Newsletter() {
               <Check className="h-10 w-10 text-white" />
             </div>
             
-            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h2 className="font-graffiti text-3xl md:text-4xl font-black text-nile-blue mb-4">
               Obrigado por se inscrever! 🎉
             </h2>
             
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-gray-600">
               Você receberá nossas novidades e ofertas exclusivas em breve.
             </p>
           </div>
@@ -52,11 +52,11 @@ export default function Newsletter() {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-br from-pine/5 to-sunset-orange/5 relative overflow-hidden">
+    <section className="py-16 bg-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-pine rounded-full -translate-x-32 -translate-y-32" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-sunset-orange rounded-full translate-x-48 translate-y-48" />
+        <div className="absolute top-0 left-0 w-64 h-64 bg-sunset-orange rounded-full -translate-x-32 -translate-y-32" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-pine rounded-full translate-x-48 translate-y-48" />
         
         {/* Geometric Shapes */}
         <div className="absolute top-1/4 left-1/4 w-8 h-8 border-2 border-tangerine rounded-lg rotate-45 float-animation" />
@@ -70,11 +70,11 @@ export default function Newsletter() {
             <Mail className="h-8 w-8 text-tangerine" />
           </div>
           
-          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="font-graffiti text-3xl md:text-4xl font-black text-nile-blue mb-4">
             Fique por dentro das <span className="text-gradient-sunset">novidades</span>
           </h2>
           
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Receba primeiro as novidades, ofertas exclusivas e dicas sobre cannabis lifestyle
           </p>
         </div>
@@ -93,10 +93,10 @@ export default function Newsletter() {
             <button
               type="submit"
               disabled={isLoading || !email}
-              className={`absolute right-2 top-2 bottom-2 px-6 rounded-xl font-semibold transition-all duration-300 ${
+              className={`star-border-button absolute right-2 top-2 bottom-2 px-6 rounded-xl font-semibold transition-all duration-300 ${
                 isLoading || !email
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-pine hover:bg-pine/90 text-white hover:scale-105 shadow-md hover:shadow-lg"
+                  : ""
               }`}
             >
               {isLoading ? (

@@ -256,6 +256,125 @@
   }
 }
 
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Touch-friendly */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Header Adaptive Styles */
+.header-light-bg {
+  color: #1a1a1a !important;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.header-dark-bg {
+  color: #FFFFFF !important;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.menu-item {
+  font-family: 'Permanent Marker', 'Bebas Neue', cursive;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-item:hover {
+  transform: scale(1.05);
+  text-shadow: 3px 3px 6px rgba(255,107,53,0.5);
+}
+
+/* Benefits Section */
+.benefits-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  padding: 60px 20px;
+}
+
+.benefit-card {
+  text-align: center;
+  padding: 30px 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(255,107,53,0.15);
+}
+
+.icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #FFE5DC, #FFD4C3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.pulse-effect {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid hsl(var(--sunset-orange));
+  animation: pulse 2s infinite;
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+.benefit-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.benefit-highlight {
+  font-size: 18px;
+  color: hsl(var(--sunset-orange));
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.benefit-description {
+  font-size: 14px;
+  color: #666;
+}
+
 /* Star Border Effect for Buttons */
 .star-border-button {
   position: relative;
@@ -267,6 +386,8 @@
   font-weight: bold;
   overflow: hidden;
   transition: all 0.3s ease;
+  min-height: 44px;
+  cursor: pointer;
 }
 
 .star-border-button::before {
@@ -311,5 +432,110 @@
   }
   100% {
     background-position: 100% 50%;
+  }
+}
+
+/* Responsive Design - Mobile First */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .benefits-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .hero-title {
+    font-size: 36px !important;
+  }
+  
+  .hero-subtitle {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobile (max-width: 767px) */
+@media (max-width: 767px) {
+  /* Benefits em coluna única */
+  .benefits-section {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 40px 15px;
+  }
+  
+  .benefit-card {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 20px;
+  }
+  
+  .icon-wrapper {
+    width: 60px;
+    height: 60px;
+    margin: 0 15px 0 0;
+    flex-shrink: 0;
+  }
+  
+  /* Hero Carousel Mobile */
+  .hero-title {
+    font-size: 28px !important;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 14px !important;
+    line-height: 1.4;
+  }
+  
+  .star-border-button {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+  
+  /* Menu Mobile */
+  .mobile-menu {
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(20px);
+  }
+  
+  .menu-item {
+    font-size: 18px;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  /* Seção Parceiros Mobile */
+  .partners-section h2 {
+    font-size: 32px !important;
+  }
+  
+  /* Newsletter Mobile */
+  .newsletter-section {
+    padding: 40px 20px;
+  }
+  
+  .newsletter-input {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .newsletter-button {
+    width: 100%;
+  }
+}
+
+/* Mobile Pequeno (max-width: 375px) */
+@media (max-width: 375px) {
+  .hero-title {
+    font-size: 24px !important;
+  }
+  
+  .benefit-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .icon-wrapper {
+    margin: 0 0 15px 0;
   }
 }
