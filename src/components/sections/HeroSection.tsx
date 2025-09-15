@@ -103,7 +103,7 @@ export default function HeroSection() {
                       <div>
                         <Link 
                           to={slide.link} 
-                          className="btn-hero-primary text-lg px-10 py-4 inline-block drop-shadow-lg"
+                          className="star-border-button text-lg px-10 py-4 inline-block drop-shadow-lg"
                         >
                           {slide.cta}
                         </Link>

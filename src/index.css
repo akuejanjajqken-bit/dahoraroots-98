@@ -255,3 +255,61 @@
     box-shadow: 0 0 40px hsla(var(--tangerine), 0.8);
   }
 }
+
+/* Star Border Effect for Buttons */
+.star-border-button {
+  position: relative;
+  padding: 12px 32px;
+  background: linear-gradient(90deg, hsl(var(--sunset-orange)), hsl(var(--tangerine)));
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.star-border-button::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, transparent, #fff, transparent, #fff, transparent);
+  background-size: 400% 400%;
+  border-radius: 8px;
+  z-index: -1;
+  animation: starBorder 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.star-border-button:hover::before {
+  opacity: 1;
+}
+
+.star-border-button::after {
+  content: '✨';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+.star-border-button:hover::after {
+  transform: translate(-50%, -50%) scale(1.5);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+@keyframes starBorder {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
