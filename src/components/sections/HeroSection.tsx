@@ -66,33 +66,44 @@ export default function HeroSection() {
             {heroSlides.map((slide, index) => (
               <CarouselItem key={index} className="h-full">
                 <div className="relative w-full h-full">
+                  {/* Background Image */}
                   <img 
                     src={slide.image} 
                     alt={slide.alt}
-                    className="w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover z-0"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-nile-blue/30 via-nile-blue/20 to-nile-blue/10" />
                   
-                  {/* Slide Content */}
-                  <div className="absolute inset-0 flex items-start justify-center pt-24 md:pt-32 lg:pt-40 z-10">
+                  {/* Dark Overlay for Better Text Contrast */}
+                  <div className="absolute inset-0 bg-black/60 z-10" />
+                  
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-nile-blue/40 via-transparent to-nile-blue/40 z-20" />
+                  
+                  {/* Content Container */}
+                  <div className="absolute inset-0 flex items-center justify-center z-30">
                     <div className="text-center px-4 max-w-4xl mx-auto">
-                      <div className="scroll-reveal">
-                        <h1 className="hero-title mb-6 text-3xl md:text-5xl lg:text-6xl font-black leading-tight">
+                      {/* Title with better styling */}
+                      <div className="mb-6">
+                        <h1 className="text-white font-graffiti font-black text-4xl md:text-6xl lg:text-7xl leading-tight drop-shadow-2xl">
                           {slide.title}
-                          <span className="block text-gradient-sunset mt-2">{slide.subtitle}</span>
+                          <span className="block text-gradient-sunset mt-2 drop-shadow-lg">{slide.subtitle}</span>
                         </h1>
                       </div>
                       
-                      <div className="scroll-reveal" style={{ animationDelay: '0.2s' }}>
-                        <p className="hero-subtitle mb-8 max-w-2xl mx-auto text-lg md:text-xl">
-                          {slide.description}
-                        </p>
+                      {/* Subtitle with background for better readability */}
+                      <div className="mb-8">
+                        <div className="bg-black/30 backdrop-blur-sm rounded-xl p-6 mx-auto max-w-3xl">
+                          <p className="text-white text-lg md:text-xl font-urban font-medium leading-relaxed drop-shadow-lg">
+                            {slide.description}
+                          </p>
+                        </div>
                       </div>
 
-                      <div className="scroll-reveal" style={{ animationDelay: '0.4s' }}>
+                      {/* CTA Button */}
+                      <div>
                         <Link 
                           to={slide.link} 
-                          className="btn-hero-primary text-lg px-10 py-4 inline-block"
+                          className="btn-hero-primary text-lg px-10 py-4 inline-block drop-shadow-lg"
                         >
                           {slide.cta}
                         </Link>
