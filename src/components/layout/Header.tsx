@@ -81,16 +81,23 @@ export default function Header() {
                     
                     {/* Shop Dropdown */}
                     {isShopDropdownOpen && (
-                      <div className="absolute top-full left-0 mt-2 w-48 bg-background/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 py-2 z-50">
-                        {shopCategories.map((category) => (
-                          <Link
-                            key={category.name}
-                            to={category.href}
-                            className="block px-4 py-2 text-sm text-foreground hover:text-tangerine hover:bg-white/10 transition-colors duration-200"
-                          >
-                            {category.name}
-                          </Link>
-                        ))}
+                      <div className="absolute top-full left-0 mt-2 w-64 bg-background/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 py-4 z-50">
+                        <div className="px-4 mb-3">
+                          <h3 className="text-xs font-semibold text-foreground/70 uppercase tracking-wider">
+                            Categorias
+                          </h3>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1">
+                          {shopCategories.map((category) => (
+                            <Link
+                              key={category.name}
+                              to={category.href}
+                              className="block px-4 py-2 text-sm text-foreground hover:text-tangerine hover:bg-white/10 transition-colors duration-200 rounded-lg mx-2"
+                            >
+                              {category.name}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -216,21 +223,64 @@ export default function Header() {
         {isMenuOpen && (
           <div className="lg:hidden glass-header border-t border-white/20">
             <div className="max-w-7xl mx-auto px-4 py-6">
-              <nav className="space-y-4">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`block font-medium transition-colors duration-300 ${
-                      isActive(item.href)
-                        ? "text-tangerine"
-                        : "text-white hover:text-tangerine"
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+              <nav className="space-y-6">
+                {/* Main Navigation */}
+                <div className="space-y-4">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`block font-medium transition-colors duration-300 py-2 ${
+                        isActive(item.href)
+                          ? "text-tangerine border-l-4 border-tangerine pl-4"
+                          : "text-white hover:text-tangerine pl-4"
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Shop Categories */}
+                <div className="border-t border-white/20 pt-6">
+                  <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4 px-4">
+                    Categorias
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {shopCategories.map((category) => (
+                      <Link
+                        key={category.name}
+                        to={category.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block px-4 py-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors duration-300 text-sm text-white hover:text-tangerine"
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* User Actions */}
+                <div className="border-t border-white/20 pt-6">
+                  <div className="flex items-center justify-between px-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-tangerine to-sunset-orange rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">DR</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium text-sm">Dahora Roots</p>
+                        <p className="text-white/60 text-xs">Sua loja premium</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setIsMenuOpen(false)}
+                      className="p-2 text-white/60 hover:text-white transition-colors"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
               </nav>
             </div>
           </div>
