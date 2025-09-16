@@ -1,6 +1,7 @@
 import { Star, ShoppingCart, Heart, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import SpotlightCard from "@/components/ui/spotlight-card";
+import { useCart } from "@/contexts/CartContext";
 import stickersImage from "@/assets/stickers-collage.jpg";
 import sadhuImage from "@/assets/sadhu-products.jpg";
 import dixavadoresImage from "@/assets/dixavadores-collection.webp";
@@ -58,6 +59,8 @@ const featuredProducts = [
 ];
 
 export default function FeaturedProducts() {
+  const { addItem } = useCart();
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -69,6 +72,10 @@ export default function FeaturedProducts() {
         }`}
       />
     ));
+  };
+
+  const handleAddToCart = (product: any) => {
+    addItem(product);
   };
 
   return (
@@ -124,7 +131,10 @@ export default function FeaturedProducts() {
 
                 {/* Quick Add to Cart */}
                 <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                  <button className="w-full bg-white/20 backdrop-blur-sm text-white font-semibold px-4 py-2 rounded-lg border border-white/30 hover:bg-white/30 transition-all duration-300 flex items-center justify-center gap-2">
+                  <button 
+                    onClick={() => handleAddToCart(product)}
+                    className="w-full bg-white/20 backdrop-blur-sm text-white font-semibold px-4 py-2 rounded-lg border border-white/30 hover:bg-white/30 transition-all duration-300 flex items-center justify-center gap-2"
+                  >
                     <ShoppingCart className="h-4 w-4" />
                     Adicionar
                   </button>

@@ -33,10 +33,10 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { name: "Instagram", icon: Instagram, href: "https://instagram.com/sunsetgrove" },
-  { name: "Facebook", icon: Facebook, href: "https://facebook.com/sunsetgrove" },
-  { name: "Twitter", icon: Twitter, href: "https://twitter.com/sunsetgrove" },
-  { name: "YouTube", icon: Youtube, href: "https://youtube.com/sunsetgrove" },
+  { name: "Instagram", icon: Instagram, href: "https://instagram.com/dahoraroots" },
+  { name: "Facebook", icon: Facebook, href: "https://facebook.com/dahoraroots" },
+  { name: "Twitter", icon: Twitter, href: "https://twitter.com/dahoraroots" },
+  { name: "YouTube", icon: Youtube, href: "https://youtube.com/dahoraroots" },
 ];
 
 export default function Footer() {
@@ -50,9 +50,9 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-tangerine to-sunset-orange rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold">SG</span>
+                <span className="text-white font-bold">DR</span>
               </div>
-              <span className="font-playfair font-bold text-2xl">Sunset Grove</span>
+              <span className="font-playfair font-bold text-2xl">Dahora Roots</span>
             </Link>
             
             <p className="text-white/70 mb-6 leading-relaxed">
@@ -64,7 +64,7 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-white/70">
                 <Mail className="h-4 w-4 text-tangerine" />
-                <span>contato@sunsetgrove.com</span>
+                <span>contato@dahoraroots.com</span>
               </div>
               <div className="flex items-center gap-3 text-white/70">
                 <Phone className="h-4 w-4 text-tangerine" />
@@ -163,7 +163,7 @@ export default function Footer() {
             {/* Copyright */}
             <div className="text-center lg:text-left">
               <p className="text-white/70">
-                © 2024 <span className="text-gradient-sunset font-semibold">Sunset Grove</span>. 
+                © 2024 <span className="text-gradient-sunset font-semibold">Dahora Roots</span>. 
                 Todos os direitos reservados.
               </p>
             </div>

@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Filter, Grid, List, ChevronDown } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { useCart } from "@/contexts/CartContext";
 
 export default function Products() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('relevance');
   const [showFilters, setShowFilters] = useState(false);
+  const { addItem } = useCart();
 
   const categories = [
     "Todos", 
@@ -270,7 +272,10 @@ export default function Products() {
                             )}
                           </div>
                           
-                          <button className="w-full btn-cta mt-4">
+                          <button 
+                            onClick={() => addItem(product)}
+                            className="w-full btn-cta mt-4"
+                          >
                             Adicionar ao Carrinho
                           </button>
                         </div>

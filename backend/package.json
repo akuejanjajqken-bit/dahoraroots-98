@@ -1,0 +1,32 @@
+{
+  "name": "dahora-roots-backend",
+  "version": "1.0.0",
+  "description": "Backend API para o e-commerce Dahora Roots",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "init-db": "node -e \"const sqlite3 = require('sqlite3').verbose(); const fs = require('fs'); const db = new sqlite3.Database('./database.db'); const sql = fs.readFileSync('./database.sql', 'utf8'); db.exec(sql, (err) => { if (err) console.error(err); else console.log('Database initialized'); db.close(); });\""
+  },
+  "keywords": [
+    "ecommerce",
+    "api",
+    "sqlite",
+    "express"
+  ],
+  "author": "Dahora Roots",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
