@@ -1,73 +1,215 @@
-# Welcome to your Lovable project
+# 🌿 Dahora Roots - E-commerce de Tabacaria
 
-## Project info
+Uma loja online moderna e elegante para produtos de tabacaria, desenvolvida com React, TypeScript e backend Node.js com SQLite.
 
-**URL**: https://lovable.dev/projects/79ffaa30-2a0c-44fa-9df4-d043129cd26c
+## ✨ Funcionalidades Implementadas
 
-## How can I edit this code?
+### 🛒 Sistema de Carrinho
+- ✅ Adicionar/remover produtos
+- ✅ Atualizar quantidades
+- ✅ Persistência no localStorage
+- ✅ Sidebar de carrinho
+- ✅ Página dedicada do carrinho
+- ✅ Cálculo automático de totais e frete
 
-There are several ways of editing your application.
+### 🔐 Sistema de Autenticação
+- ✅ Login e registro de usuários
+- ✅ Autenticação JWT
+- ✅ Proteção de rotas
+- ✅ Perfil do usuário
+- ✅ Logout seguro
 
-**Use Lovable**
+### 🎨 Interface e UX
+- ✅ Design responsivo e moderno
+- ✅ Glassmorphism e efeitos visuais
+- ✅ Paleta de cores consistente
+- ✅ Tipografia diversificada
+- ✅ Animações suaves
+- ✅ Componentes reutilizáveis
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/79ffaa30-2a0c-44fa-9df4-d043129cd26c) and start prompting.
+### 🛍️ E-commerce
+- ✅ Catálogo de produtos
+- ✅ Filtros e busca
+- ✅ Página de checkout
+- ✅ Sistema de pedidos
+- ✅ Categorias organizadas
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🗄️ Backend e Banco de Dados
+- ✅ API REST com Express.js
+- ✅ Banco SQLite para desenvolvimento
+- ✅ Autenticação JWT
+- ✅ CRUD completo de produtos
+- ✅ Sistema de carrinho persistente
+- ✅ Gestão de pedidos
 
-**Use your preferred IDE**
+## 🚀 Como Executar o Projeto
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Pré-requisitos
+- Node.js (versão 16 ou superior)
+- npm ou yarn
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### 1. Instalar Dependências do Frontend
+```bash
+cd /workspace
+npm install
 ```
 
-**Edit a file directly in GitHub**
+### 2. Instalar Dependências do Backend
+```bash
+cd /workspace/backend
+npm install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### 3. Inicializar o Banco de Dados
+```bash
+cd /workspace/backend
+npm run init-db
+```
 
-**Use GitHub Codespaces**
+### 4. Executar o Backend
+```bash
+cd /workspace/backend
+npm run dev
+```
+O backend estará rodando em: http://localhost:3001
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### 5. Executar o Frontend
+```bash
+cd /workspace
+npm run dev
+```
+O frontend estará rodando em: http://localhost:5173
 
-## What technologies are used for this project?
+## 📁 Estrutura do Projeto
 
-This project is built with:
+```
+/workspace
+├── src/
+│   ├── components/          # Componentes React
+│   │   ├── cart/           # Componentes do carrinho
+│   │   ├── layout/         # Header, Footer
+│   │   ├── sections/       # Seções da página inicial
+│   │   └── ui/             # Componentes de UI
+│   ├── contexts/           # Contextos React (Cart, Auth)
+│   ├── pages/              # Páginas da aplicação
+│   ├── hooks/              # Hooks customizados
+│   └── lib/                # Utilitários
+├── backend/
+│   ├── server.js           # Servidor Express
+│   ├── database.sql        # Schema do banco
+│   ├── database.db         # Banco SQLite (gerado)
+│   └── package.json        # Dependências do backend
+└── public/                 # Arquivos estáticos
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🎯 Funcionalidades Principais
 
-## How can I deploy this project?
+### Carrinho de Compras
+- **Adicionar produtos**: Clique no botão "Adicionar" em qualquer produto
+- **Visualizar carrinho**: Clique no ícone do carrinho no header
+- **Gerenciar quantidades**: Use os botões +/- no carrinho
+- **Remover itens**: Botão de lixeira ou quantidade zero
+- **Persistência**: Carrinho salvo no localStorage
 
-Simply open [Lovable](https://lovable.dev/projects/79ffaa30-2a0c-44fa-9df4-d043129cd26c) and click on Share -> Publish.
+### Autenticação
+- **Registro**: Página `/register` para criar nova conta
+- **Login**: Página `/login` para acessar conta existente
+- **Perfil**: Página `/account` para gerenciar dados
+- **Proteção**: Rotas protegidas automaticamente
 
-## Can I connect a custom domain to my Lovable project?
+### Produtos
+- **Catálogo**: Página `/products` com todos os produtos
+- **Categorias**: Filtros por categoria
+- **Busca**: Campo de busca no header
+- **Detalhes**: Informações completas de cada produto
 
-Yes, you can!
+## 🛠️ Tecnologias Utilizadas
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Frontend
+- **React 18** - Biblioteca principal
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool e dev server
+- **Tailwind CSS** - Framework CSS
+- **React Router** - Roteamento
+- **Lucide React** - Ícones
+- **Radix UI** - Componentes acessíveis
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Backend
+- **Node.js** - Runtime JavaScript
+- **Express.js** - Framework web
+- **SQLite** - Banco de dados
+- **JWT** - Autenticação
+- **bcryptjs** - Hash de senhas
+- **CORS** - Cross-origin requests
+
+## 🎨 Design System
+
+### Cores
+- **Pine**: `#016A6D` - Cor primária
+- **Sunset Orange**: `#E16A3D` - Cor secundária
+- **Tangerine**: `#FFA45D` - Cor de destaque
+- **Nile Blue**: `#043E52` - Cor escura
+- **Light BG**: `#F8F8F8` - Fundo claro
+
+### Tipografia
+- **Graffiti**: Títulos principais
+- **Playfair**: Títulos elegantes
+- **Urban**: Texto corrido
+- **Block**: Botões e elementos destacados
+
+## 📱 Responsividade
+
+O projeto é totalmente responsivo e otimizado para:
+- 📱 Mobile (320px+)
+- 📱 Tablet (768px+)
+- 💻 Desktop (1024px+)
+- 🖥️ Large screens (1440px+)
+
+## 🔧 Scripts Disponíveis
+
+### Frontend
+```bash
+npm run dev          # Servidor de desenvolvimento
+npm run build        # Build para produção
+npm run preview      # Preview do build
+npm run lint         # Linter
+```
+
+### Backend
+```bash
+npm start            # Servidor em produção
+npm run dev          # Servidor com nodemon
+npm run init-db      # Inicializar banco de dados
+```
+
+## 🚀 Próximos Passos
+
+### Funcionalidades Planejadas
+- [ ] Sistema de avaliações
+- [ ] Wishlist/Favoritos
+- [ ] Programa de fidelidade
+- [ ] Chat de suporte
+- [ ] Blog integrado
+- [ ] Sistema de cupons
+- [ ] Relatórios de vendas
+- [ ] Dashboard administrativo
+
+### Melhorias Técnicas
+- [ ] Testes automatizados
+- [ ] CI/CD pipeline
+- [ ] Docker containerization
+- [ ] Migração para PostgreSQL
+- [ ] Cache Redis
+- [ ] CDN para imagens
+- [ ] PWA features
+
+## 📞 Suporte
+
+Para dúvidas ou sugestões, entre em contato:
+- 📧 Email: contato@dahoraroots.com
+- 📱 WhatsApp: (11) 99999-9999
+- 🌐 Website: www.dahoraroots.com
+
+---
+
+**Dahora Roots** - Sua loja premium de acessórios para cannabis e lifestyle 🌿✨

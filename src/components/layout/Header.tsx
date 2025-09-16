@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Search, ShoppingCart, User, Menu, X, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import CartSidebar from "@/components/cart/CartSidebar";
 
 const navigation = [
   { name: "Shop", href: "/products" },
@@ -29,8 +32,10 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const location = useLocation();
-  const cartCount = 3; // Mock cart count
+  const { state: cartState, toggleCart } = useCart();
+  const { state: authState, logout } = useAuth();
 
   const isActive = (href: string) => location.pathname === href;
 
@@ -118,27 +123,78 @@ export default function Header() {
               </button>
 
               {/* Cart */}
-              <Link
-                to="/cart"
+              <button
+                onClick={toggleCart}
                 className="relative p-2 text-white hover:text-tangerine transition-colors duration-300 hover:scale-110 transform"
                 aria-label="Shopping cart"
               >
                 <ShoppingCart className="h-5 w-5" />
-                {cartCount > 0 && (
+                {cartState.itemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-tangerine text-nile-blue text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
-                    {cartCount}
+                    {cartState.itemCount}
                   </span>
                 )}
-              </Link>
+              </button>
 
               {/* User Account */}
-              <Link
-                to="/account"
-                className="p-2 text-white hover:text-tangerine transition-colors duration-300 hover:scale-110 transform"
-                aria-label="User account"
+              <div
+                className="relative"
+                onMouseEnter={() => setIsUserDropdownOpen(true)}
+                onMouseLeave={() => setIsUserDropdownOpen(false)}
               >
-                <User className="h-5 w-5" />
-              </Link>
+                <button
+                  className="p-2 text-white hover:text-tangerine transition-colors duration-300 hover:scale-110 transform"
+                  aria-label="User account"
+                >
+                  <User className="h-5 w-5" />
+                </button>
+                
+                {/* User Dropdown */}
+                {isUserDropdownOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-background/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 py-2 z-50">
+                    {authState.isAuthenticated ? (
+                      <>
+                        <div className="px-4 py-2 border-b border-white/10">
+                          <p className="text-sm font-semibold text-foreground">
+                            {authState.user?.firstName} {authState.user?.lastName}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {authState.user?.email}
+                          </p>
+                        </div>
+                        <Link
+                          to="/account"
+                          className="block px-4 py-2 text-sm text-foreground hover:text-tangerine hover:bg-white/10 transition-colors duration-200"
+                        >
+                          Minha Conta
+                        </Link>
+                        <button
+                          onClick={logout}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200 flex items-center gap-2"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          Sair
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          to="/login"
+                          className="block px-4 py-2 text-sm text-foreground hover:text-tangerine hover:bg-white/10 transition-colors duration-200"
+                        >
+                          Entrar
+                        </Link>
+                        <Link
+                          to="/register"
+                          className="block px-4 py-2 text-sm text-foreground hover:text-tangerine hover:bg-white/10 transition-colors duration-200"
+                        >
+                          Criar Conta
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
 
               {/* Mobile Menu Button */}
               <button
@@ -205,6 +261,9 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      {/* Cart Sidebar */}
+      <CartSidebar />
     </>
   );
 }
