@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search, ShoppingCart, User, ChevronDown, 
-  Menu, X, Sparkles, TrendingUp, Package,
-  Heart, Star, Zap, ArrowRight, LogOut, LogIn
+  Menu, X, LogIn
 } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import CartSidebar from '@/components/cart/CartSidebar';
@@ -17,15 +16,13 @@ const EnhancedHeader: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isSubmenuHovered, setIsSubmenuHovered] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const navRef = useRef<HTMLElement>(null);
   const submenuTimeout = useRef<NodeJS.Timeout | null>(null);
   const location = useLocation();
-  const navigate = useNavigate();
   const { state: cartState, toggleCart } = useCart();
   const { state: authState, logout } = useAuth();
 
-  // Scroll effect with parallax
+  // Scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 30);
@@ -43,9 +40,8 @@ const EnhancedHeader: React.FC = () => {
     };
   }, []);
 
-  // Handle submenu hover with delay - FIXED HOVER LOGIC
+  // Handle submenu hover with delay
   const handleMenuEnter = (menu: string) => {
-    // Clear any existing timeout
     if (submenuTimeout.current) {
       clearTimeout(submenuTimeout.current);
     }
@@ -54,16 +50,14 @@ const EnhancedHeader: React.FC = () => {
   };
 
   const handleMenuLeave = () => {
-    // Add small delay before closing to allow cursor to move to submenu
     submenuTimeout.current = setTimeout(() => {
       if (!isSubmenuHovered) {
         setActiveMenu(null);
       }
-    }, 100); // 100ms delay for smooth transition
+    }, 100);
   };
 
   const handleSubmenuEnter = () => {
-    // Clear timeout when entering submenu
     if (submenuTimeout.current) {
       clearTimeout(submenuTimeout.current);
     }
@@ -72,44 +66,28 @@ const EnhancedHeader: React.FC = () => {
 
   const handleSubmenuLeave = () => {
     setIsSubmenuHovered(false);
-    // Close menu after leaving submenu
     submenuTimeout.current = setTimeout(() => {
       setActiveMenu(null);
     }, 100);
   };
 
-  // Mouse tracking for gradient effect
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (navRef.current) {
-      const rect = navRef.current.getBoundingClientRect();
-      setMousePosition({ 
-        x: ((e.clientX - rect.left) / rect.width) * 100, 
-        y: ((e.clientY - rect.top) / rect.height) * 100 
-      });
-    }
-  };
-
-  // Submenu categories
+  // Submenu categories - NO EMOJIS
   const shopSubmenu = [
     { 
       title: 'Papéis', 
-      icon: '📜', 
       items: ['King Size', '1 1/4', 'Slim', 'Brown'], 
       highlight: true 
     },
     { 
       title: 'Sedas', 
-      icon: '🍃', 
       items: ['Premium', 'Flavored', 'Transparente', 'Colorida'] 
     },
     { 
       title: 'Filtros', 
-      icon: '🎯', 
       items: ['Tips', 'Carvão Ativado', 'Slim', 'Vidro'] 
     },
     { 
       title: 'Acessórios', 
-      icon: '💼', 
       items: ['Dichavadores', 'Cases', 'Bandejas', 'Isqueiros'] 
     }
   ];
@@ -119,54 +97,30 @@ const EnhancedHeader: React.FC = () => {
     { name: "Coleções", href: "/collections" },
     { name: "Sobre", href: "/about" },
     { name: "Blog", href: "/blog" },
-    { name: "Contato", href: "/contact" },
+    { name: "Contato", href: "/contact" }
   ];
-
-  const isActive = (href: string) => location.pathname === href;
 
   return (
     <>
-      {/* Main Navigation */}
+      {/* Navigation Header */}
       <nav 
-        ref={navRef} 
-        onMouseMove={handleMouseMove}
+        ref={navRef}
         style={{ 
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
           zIndex: 1000,
-          height: isScrolled ? '70px' : '90px',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          height: isScrolled ? '70px' : '80px',
           background: isScrolled 
-            ? 'rgba(255, 255, 255, 0.98)' 
-            : 'linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(255, 249, 245, 1) 100%)',
+            ? 'rgba(255, 255, 255, 0.95)'
+            : 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
-          boxShadow: isScrolled 
-            ? '0 8px 32px rgba(225, 106, 61, 0.08)' 
-            : '0 4px 20px rgba(0, 0, 0, 0.03)',
-          borderBottom: '1px solid rgba(225, 106, 61, 0.1)',
-          '--mouse-x': `${mousePosition.x}%`,
-          '--mouse-y': `${mousePosition.y}%`
-        } as React.CSSProperties & { '--mouse-x': string; '--mouse-y': string }}
+          borderBottom: isScrolled ? '1px solid rgba(225, 106, 61, 0.1)' : 'none',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: isScrolled ? '0 8px 32px rgba(0, 0, 0, 0.1)' : '0 2px 20px rgba(0, 0, 0, 0.05)'
+        }}
       >
-        {/* Animated Background Gradient */}
-        <div style={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `radial-gradient(
-            600px circle at var(--mouse-x) var(--mouse-y),
-            rgba(225, 106, 61, 0.03) 0%,
-            transparent 40%
-          )`,
-          pointerEvents: 'none',
-          opacity: isScrolled ? 0 : 1,
-          transition: 'opacity 0.3s ease'
-        }} />
-
         <div style={{
           maxWidth: '1400px',
           margin: '0 auto',
@@ -181,35 +135,27 @@ const EnhancedHeader: React.FC = () => {
           <Link 
             to="/" 
             style={{
-              fontSize: isScrolled ? '24px' : '28px',
+              fontSize: '28px',
               fontWeight: '800',
-              background: 'linear-gradient(135deg, #E16A3D 0%, #016A6D 100%)',
+              background: 'linear-gradient(135deg, #E16A3D 0%, #FEA450 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               textDecoration: 'none',
-              transition: 'all 0.4s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              transform: isScrolled ? 'scale(0.95)' : 'scale(1)'
+              transition: 'all 0.3s ease'
             }}
           >
-            <span style={{
-              display: 'inline-block',
-              animation: 'float 3s ease-in-out infinite'
-            }}>🍃</span>
-            Dahora Roots
+            DAHORA ROOTS
           </Link>
 
           {/* Desktop Menu */}
           <div className="desktop-menu" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            gap: '40px',
             height: '100%'
           }}>
             
-            {/* Shop with Mega Menu - FIXED HOVER LOGIC */}
+            {/* Shop with Mega Menu */}
             <div 
               className="menu-item"
               onMouseEnter={() => handleMenuEnter('shop')}
@@ -221,44 +167,39 @@ const EnhancedHeader: React.FC = () => {
                 style={{
                   height: '100%',
                   padding: '0 20px',
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: activeMenu === 'shop' ? '#E16A3D' : '#043E52',
-                  cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: '8px',
+                  color: activeMenu === 'shop' ? '#E16A3D' : '#043E52',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '600',
                   transition: 'all 0.3s ease',
-                  position: 'relative',
-                  textDecoration: 'none'
+                  position: 'relative'
                 }}
               >
                 Shop
                 <ChevronDown 
-                  size={16} 
+                  size={16}
                   style={{
                     transform: activeMenu === 'shop' ? 'rotate(180deg)' : 'rotate(0)',
                     transition: 'transform 0.3s ease'
                   }}
                 />
-                
-                {/* Active Indicator */}
-                <span style={{
+                <div style={{
                   position: 'absolute',
                   bottom: 0,
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  width: activeMenu === 'shop' ? '80%' : '0',
+                  width: activeMenu === 'shop' ? '100%' : '0%',
                   height: '3px',
-                  backgroundColor: '#E16A3D',
+                  background: 'linear-gradient(90deg, #E16A3D 0%, #FEA450 100%)',
                   borderRadius: '3px 3px 0 0',
                   transition: 'width 0.3s ease'
                 }} />
               </Link>
 
-              {/* Mega Dropdown Menu - STAYS OPEN ON HOVER */}
+              {/* Mega Dropdown Menu */}
               {activeMenu === 'shop' && (
                 <div 
                   onMouseEnter={handleSubmenuEnter}
@@ -273,145 +214,133 @@ const EnhancedHeader: React.FC = () => {
                     backgroundColor: 'white',
                     borderRadius: '20px',
                     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-                    marginTop: '0', // No gap between menu and submenu
+                    marginTop: '0',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    overflow: 'hidden',
-                    animation: 'fadeIn 0.3s ease'
+                    overflow: 'hidden'
                   }}
                 >
-                left: '50%',
-                transform: `translateX(-50%) translateY(${activeMenu === 'shop' ? '10px' : '0'})`,
-                width: '800px',
-                maxWidth: '90vw',
-                backgroundColor: 'white',
-                borderRadius: '20px',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-                opacity: activeMenu === 'shop' ? 1 : 0,
-                visibility: activeMenu === 'shop' ? 'visible' : 'hidden',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                overflow: 'hidden'
-              }}>
-                {/* Gradient Header */}
-                <div style={{
-                  background: 'linear-gradient(135deg, #E16A3D 0%, #FEA450 100%)',
-                  padding: '16px 24px',
-                  color: 'white'
-                }}>
+                  {/* Gradient Header */}
                   <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
+                    background: 'linear-gradient(135deg, #E16A3D 0%, #FEA450 100%)',
+                    padding: '16px 24px',
+                    color: 'white'
                   }}>
-                    <span style={{ fontSize: '14px', fontWeight: '600' }}>
-                      🔥 Ofertas Especiais
-                    </span>
-                    <span style={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                      padding: '4px 12px',
-                      borderRadius: '20px',
-                      fontSize: '12px'
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
                     }}>
-                      Até 40% OFF
-                    </span>
+                      <span style={{ fontSize: '14px', fontWeight: '600' }}>
+                        Ofertas Especiais
+                      </span>
+                      <span style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px'
+                      }}>
+                        Até 40% OFF
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                {/* Categories Grid */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(4, 1fr)',
-                  gap: '24px',
-                  padding: '24px'
-                }}>
-                  {shopSubmenu.map((category, idx) => (
-                    <div key={idx}>
-                      <div style={{
-                        display: 'flex',
+                  {/* Categories Grid */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gap: '24px',
+                    padding: '24px'
+                  }}>
+                    {shopSubmenu.map((category, idx) => (
+                      <div key={idx}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          marginBottom: '16px',
+                          paddingBottom: '8px',
+                          borderBottom: '2px solid #F5F5F5'
+                        }}>
+                          <h3 style={{
+                            fontSize: '16px',
+                            fontWeight: '700',
+                            color: '#043E52',
+                            margin: 0
+                          }}>
+                            {category.title}
+                          </h3>
+                          {category.highlight && (
+                            <span style={{
+                              backgroundColor: '#E16A3D',
+                              color: 'white',
+                              fontSize: '10px',
+                              fontWeight: 'bold',
+                              padding: '2px 6px',
+                              borderRadius: '10px',
+                              textTransform: 'uppercase'
+                            }}>
+                              HOT
+                            </span>
+                          )}
+                        </div>
+                        {category.items.map((item, itemIdx) => (
+                          <Link
+                            key={itemIdx}
+                            to={`/products/${category.title.toLowerCase()}/${item.toLowerCase().replace(' ', '-')}`}
+                            style={{
+                              display: 'block',
+                              padding: '8px 0',
+                              color: '#666',
+                              textDecoration: 'none',
+                              fontSize: '14px',
+                              transition: 'all 0.2s ease',
+                              borderRadius: '6px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = '#E16A3D';
+                              e.currentTarget.style.paddingLeft = '8px';
+                              e.currentTarget.style.backgroundColor = '#FFF9F5';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = '#666';
+                              e.currentTarget.style.paddingLeft = '0';
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
+                          >
+                            {item}
+                          </Link>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Bottom Banner */}
+                  <div style={{
+                    background: '#FFF9F5',
+                    padding: '16px 24px',
+                    borderTop: '1px solid #F5F5F5'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <span style={{ fontSize: '14px', color: '#043E52', fontWeight: '600' }}>
+                        Frete Grátis para pedidos acima de R$ 99
+                      </span>
+                    </div>
+                    <Link
+                      to="/products"
+                      style={{
+                        display: 'inline-flex',
                         alignItems: 'center',
                         gap: '8px',
-                        marginBottom: '12px',
-                        paddingBottom: '12px',
-                        borderBottom: '2px solid #F5F5F5'
-                      }}>
-                        <span style={{ fontSize: '20px' }}>{category.icon}</span>
-                        <h3 style={{
-                          fontSize: '16px',
-                          fontWeight: '700',
-                          color: '#043E52',
-                          margin: 0
-                        }}>
-                          {category.title}
-                        </h3>
-                        {category.highlight && (
-                          <span style={{
-                            backgroundColor: '#FFE5E5',
-                            color: '#E16A3D',
-                            padding: '2px 8px',
-                            borderRadius: '10px',
-                            fontSize: '10px',
-                            fontWeight: '600'
-                          }}>
-                            HOT
-                          </span>
-                        )}
-                      </div>
-                      {category.items.map((item, itemIdx) => (
-                        <Link
-                          key={itemIdx}
-                          to={`/products?category=${category.title.toLowerCase()}&subcategory=${item.toLowerCase().replace(' ', '-')}`}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '8px 12px',
-                            color: '#666',
-                            textDecoration: 'none',
-                            fontSize: '14px',
-                            borderRadius: '8px',
-                            transition: 'all 0.2s ease'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#FFF9F5';
-                            e.currentTarget.style.color = '#E16A3D';
-                            e.currentTarget.style.paddingLeft = '16px';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                            e.currentTarget.style.color = '#666';
-                            e.currentTarget.style.paddingLeft = '12px';
-                          }}
-                        >
-                          {item}
-                          <ArrowRight size={14} style={{ opacity: 0.5 }} />
-                        </Link>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Bottom Banner */}
-                <div style={{
-                  background: 'linear-gradient(90deg, #FFF9F5 0%, #FFE5E5 100%)',
-                  padding: '16px 24px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Zap size={20} color="#E16A3D" />
-                    <span style={{ fontSize: '14px', color: '#043E52' }}>
-                      <strong>Frete Grátis</strong> em compras acima de R$ 99
-                    </span>
+                        marginTop: '8px',
+                        color: '#E16A3D',
+                        textDecoration: 'none',
+                        fontWeight: '600',
+                        fontSize: '14px'
+                      }}
+                    >
+                      Ver Todas as Promoções →
+                    </Link>
                   </div>
-                  <Link to="/promocoes" style={{
-                    color: '#E16A3D',
-                    fontWeight: '600',
-                    fontSize: '14px',
-                    textDecoration: 'none'
-                  }}>
-                    Ver Todas as Promoções →
-                  </Link>
-                </div>
                 </div>
               )}
             </div>
@@ -422,44 +351,46 @@ const EnhancedHeader: React.FC = () => {
                 key={item.name}
                 to={item.href}
                 style={{
-                  padding: '0 20px',
                   height: '100%',
+                  padding: '0 20px',
                   display: 'flex',
                   alignItems: 'center',
-                  color: isActive(item.href) ? '#E16A3D' : '#043E52',
+                  color: location.pathname === item.href ? '#E16A3D' : '#043E52',
                   textDecoration: 'none',
                   fontSize: '16px',
                   fontWeight: '600',
-                  position: 'relative',
-                  transition: 'color 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive(item.href)) {
-                    e.currentTarget.style.color = '#E16A3D';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive(item.href)) {
-                    e.currentTarget.style.color = '#043E52';
-                  }
+                  transition: 'all 0.3s ease',
+                  position: 'relative'
                 }}
               >
                 {item.name}
                 {item.name === 'Coleções' && (
                   <span style={{
                     position: 'absolute',
-                    top: '20px',
-                    right: '10px',
+                    top: '8px',
+                    right: '8px',
                     backgroundColor: '#22C55E',
                     color: 'white',
-                    fontSize: '10px',
-                    padding: '2px 6px',
-                    borderRadius: '10px',
-                    fontWeight: '600'
+                    fontSize: '8px',
+                    fontWeight: 'bold',
+                    padding: '2px 4px',
+                    borderRadius: '6px',
+                    textTransform: 'uppercase'
                   }}>
                     NEW
                   </span>
                 )}
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: location.pathname === item.href ? '100%' : '0%',
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #E16A3D 0%, #FEA450 100%)',
+                  borderRadius: '3px 3px 0 0',
+                  transition: 'width 0.3s ease'
+                }} />
               </Link>
             ))}
           </div>
@@ -468,11 +399,11 @@ const EnhancedHeader: React.FC = () => {
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '12px'
+            gap: '16px'
           }}>
-            {/* Search with animation */}
+            {/* Search */}
             <button 
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              onClick={() => setIsSearchOpen(true)}
               style={{
                 width: '42px',
                 height: '42px',
@@ -484,11 +415,10 @@ const EnhancedHeader: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'all 0.3s ease',
-                position: 'relative'
+                transition: 'all 0.3s ease'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#E16A3D';
+                e.currentTarget.style.backgroundColor = '#016A6D';
                 e.currentTarget.style.color = 'white';
                 e.currentTarget.style.transform = 'scale(1.1)';
               }}
@@ -501,7 +431,7 @@ const EnhancedHeader: React.FC = () => {
               <Search size={20} />
             </button>
 
-            {/* LOGIN BUTTON - FIXED WITH PROPER NAVIGATION */}
+            {/* Login Button */}
             {!authState.isAuthenticated ? (
               <Link 
                 to="/login"
@@ -535,7 +465,6 @@ const EnhancedHeader: React.FC = () => {
               </Link>
             ) : (
               <div
-                className="relative"
                 onMouseEnter={() => setIsUserDropdownOpen(true)}
                 onMouseLeave={() => setIsUserDropdownOpen(false)}
               >
@@ -566,136 +495,90 @@ const EnhancedHeader: React.FC = () => {
                 <User size={20} />
               </button>
             
-            {/* User Dropdown */}
-            {isUserDropdownOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                right: 0,
-                marginTop: '8px',
-                width: '240px',
-                backgroundColor: 'white',
-                borderRadius: '16px',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-                padding: '16px',
-                zIndex: 1000
-              }}>
-                {authState.isAuthenticated ? (
-                  <>
-                    <div style={{
-                      paddingBottom: '12px',
-                      borderBottom: '1px solid #F5F5F5',
-                      marginBottom: '12px'
-                    }}>
-                      <p style={{ fontSize: '14px', fontWeight: '600', color: '#043E52', margin: 0 }}>
-                        {authState.user?.firstName} {authState.user?.lastName}
-                      </p>
-                      <p style={{ fontSize: '12px', color: '#666', margin: '4px 0 0 0' }}>
-                        {authState.user?.email}
-                      </p>
-                    </div>
-                    <Link
-                      to="/account"
-                      style={{
-                        display: 'block',
-                        padding: '8px 12px',
-                        color: '#043E52',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        borderRadius: '8px',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#FFF9F5';
-                        e.currentTarget.style.color = '#E16A3D';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = '#043E52';
-                      }}
-                    >
-                      Minha Conta
-                    </Link>
-                    <button
-                      onClick={logout}
-                      style={{
-                        width: '100%',
-                        textAlign: 'left',
-                        padding: '8px 12px',
-                        color: '#EF4444',
-                        backgroundColor: 'transparent',
-                        border: 'none',
-                        fontSize: '14px',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        transition: 'all 0.2s ease',
-                        marginTop: '4px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#FEF2F2';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }}
-                    >
-                      <LogOut size={16} />
-                      Sair
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/login"
-                      style={{
-                        display: 'block',
-                        padding: '8px 12px',
-                        color: '#043E52',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        borderRadius: '8px',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#FFF9F5';
-                        e.currentTarget.style.color = '#E16A3D';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = '#043E52';
-                      }}
-                    >
-                      Entrar
-                    </Link>
-                    <Link
-                      to="/register"
-                      style={{
-                        display: 'block',
-                        padding: '8px 12px',
-                        color: '#043E52',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        borderRadius: '8px',
-                        transition: 'all 0.2s ease',
-                        marginTop: '4px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#FFF9F5';
-                        e.currentTarget.style.color = '#E16A3D';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = '#043E52';
-                      }}
-                    >
-                      Criar Conta
-                    </Link>
-                  </>
-                )}
-              </div>
-            )}
+              {/* User Dropdown */}
+              {isUserDropdownOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: 0,
+                  marginTop: '8px',
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
+                  padding: '12px',
+                  minWidth: '200px',
+                  zIndex: 1001
+                }}>
+                  <Link 
+                    to="/account" 
+                    style={{
+                      display: 'block',
+                      padding: '10px 16px',
+                      color: '#043E52',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      borderRadius: '8px',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#FFF9F5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    Minha Conta
+                  </Link>
+                  <Link 
+                    to="/orders" 
+                    style={{
+                      display: 'block',
+                      padding: '10px 16px',
+                      color: '#043E52',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      borderRadius: '8px',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#FFF9F5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    Meus Pedidos
+                  </Link>
+                  <button 
+                    onClick={() => {
+                      logout();
+                      setIsUserDropdownOpen(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '10px 16px',
+                      color: '#EF4444',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      borderRadius: '8px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#FEF2F2';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    Sair
+                  </button>
+                </div>
+              )}
+            </div>
             )}
 
             {/* Cart with Badge */}
@@ -713,35 +596,33 @@ const EnhancedHeader: React.FC = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'all 0.3s ease',
-                position: 'relative',
-                boxShadow: '0 4px 12px rgba(225, 106, 61, 0.3)'
+                position: 'relative'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.1) rotate(-10deg)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(225, 106, 61, 0.4)';
+                e.currentTarget.style.backgroundColor = '#016A6D';
+                e.currentTarget.style.transform = 'scale(1.1)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1) rotate(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(225, 106, 61, 0.3)';
+                e.currentTarget.style.backgroundColor = '#E16A3D';
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
               <ShoppingCart size={20} />
-              {cartState.itemCount > 0 && (
+              {cartState.items.length > 0 && (
                 <span style={{
                   position: 'absolute',
-                  top: '-4px',
-                  right: '-4px',
+                  top: '-8px',
+                  right: '-8px',
                   backgroundColor: '#22C55E',
                   color: 'white',
                   fontSize: '11px',
                   fontWeight: 'bold',
                   padding: '2px 6px',
                   borderRadius: '10px',
-                  border: '2px solid white',
-                  minWidth: '20px',
-                  animation: 'pulse 2s infinite'
+                  minWidth: '18px',
+                  textAlign: 'center'
                 }}>
-                  {cartState.itemCount}
+                  {cartState.items.length}
                 </span>
               )}
             </button>
@@ -752,50 +633,14 @@ const EnhancedHeader: React.FC = () => {
               onClick={() => setIsMobileOpen(!isMobileOpen)}
               style={{
                 display: 'none',
-                width: '42px',
-                height: '42px',
-                borderRadius: '12px',
-                border: '2px solid #E5E5E5',
-                backgroundColor: 'white',
+                background: 'none',
+                border: 'none',
                 cursor: 'pointer',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.3s ease'
+                padding: '8px',
+                color: '#043E52'
               }}
             >
-              <div style={{
-                width: '20px',
-                height: '14px',
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}>
-                <span style={{
-                  width: '100%',
-                  height: '2px',
-                  backgroundColor: '#043E52',
-                  borderRadius: '2px',
-                  transition: 'all 0.3s ease',
-                  transform: isMobileOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none'
-                }} />
-                <span style={{
-                  width: '70%',
-                  height: '2px',
-                  backgroundColor: '#043E52',
-                  borderRadius: '2px',
-                  transition: 'all 0.3s ease',
-                  opacity: isMobileOpen ? 0 : 1
-                }} />
-                <span style={{
-                  width: '100%',
-                  height: '2px',
-                  backgroundColor: '#043E52',
-                  borderRadius: '2px',
-                  transition: 'all 0.3s ease',
-                  transform: isMobileOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none'
-                }} />
-              </div>
+              {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
@@ -811,32 +656,29 @@ const EnhancedHeader: React.FC = () => {
         backgroundColor: 'white',
         zIndex: 999,
         transform: isMobileOpen ? 'translateX(0)' : 'translateX(100%)',
-        transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         overflowY: 'auto'
       }}>
         {/* Mobile Header */}
         <div style={{
+          background: 'linear-gradient(135deg, #E16A3D 0%, #FEA450 100%)',
           padding: '20px',
-          borderBottom: '2px solid #F5F5F5',
+          color: 'white',
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
-          background: 'linear-gradient(135deg, #E16A3D 0%, #FEA450 100%)',
-          color: 'white'
+          alignItems: 'center'
         }}>
-          <span style={{ fontSize: '20px', fontWeight: '700' }}>Menu</span>
+          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '700' }}>
+            Menu
+          </h2>
           <button
             onClick={() => setIsMobileOpen(false)}
             style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              background: 'none',
               border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer'
+              color: 'white',
+              cursor: 'pointer',
+              padding: '8px'
             }}
           >
             <X size={20} color="white" />
@@ -845,7 +687,7 @@ const EnhancedHeader: React.FC = () => {
 
         {/* Mobile Menu Items */}
         <div style={{ padding: '20px' }}>
-          {/* Mobile Login Button - PROMINENT AT TOP */}
+          {/* Mobile Login Button */}
           {!authState.isAuthenticated && (
             <Link
               to="/login"
@@ -879,84 +721,71 @@ const EnhancedHeader: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '16px',
-                backgroundColor: '#FFF9F5',
-                border: '2px solid #FEA450',
+                backgroundColor: '#FAFAFA',
                 borderRadius: '12px',
+                border: 'none',
+                cursor: 'pointer',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 fontSize: '16px',
                 fontWeight: '600',
-                color: '#043E52',
-                cursor: 'pointer'
+                color: '#043E52'
               }}
             >
-              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Sparkles size={20} color="#E16A3D" />
-                Shop
-              </span>
+              Shop
               <ChevronDown 
-                size={20} 
+                size={20}
                 style={{
                   transform: isSubmenuOpen ? 'rotate(180deg)' : 'rotate(0)',
-                  transition: 'transform 0.3s ease',
-                  color: '#E16A3D'
+                  transition: 'transform 0.3s ease'
                 }}
               />
             </button>
             
-            {/* Submenu Items */}
-            <div style={{
-              maxHeight: isSubmenuOpen ? '500px' : '0',
-              overflow: 'hidden',
-              transition: 'max-height 0.4s ease',
-              marginTop: isSubmenuOpen ? '12px' : '0'
-            }}>
-              {shopSubmenu.map((category, idx) => (
-                <div key={idx} style={{
-                  marginBottom: '12px',
-                  padding: '12px',
-                  backgroundColor: '#FAFAFA',
-                  borderRadius: '8px'
-                }}>
-                  <div style={{
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#E16A3D',
-                    marginBottom: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}>
-                    <span>{category.icon}</span>
-                    {category.title}
+            {isSubmenuOpen && (
+              <div style={{
+                padding: '0 0 0 20px',
+                marginTop: '10px'
+              }}>
+                {shopSubmenu.map((category, idx) => (
+                  <div key={idx} style={{ marginBottom: '12px' }}>
+                    <h4 style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#E16A3D',
+                      marginBottom: '8px'
+                    }}>
+                      {category.title}
+                    </h4>
+                    {category.items.map((item, itemIdx) => (
+                      <Link
+                        key={itemIdx}
+                        to={`/products/${category.title.toLowerCase()}/${item.toLowerCase()}`}
+                        onClick={() => setIsMobileOpen(false)}
+                        style={{
+                          display: 'block',
+                          padding: '6px 0',
+                          color: '#666',
+                          textDecoration: 'none',
+                          fontSize: '14px'
+                        }}
+                      >
+                        {item}
+                      </Link>
+                    ))}
                   </div>
-                  {category.items.map((item, itemIdx) => (
-                    <Link
-                      key={itemIdx}
-                      to={`/products?category=${category.title.toLowerCase()}&subcategory=${item.toLowerCase()}`}
-                      style={{
-                        display: 'block',
-                        padding: '8px 12px',
-                        color: '#666',
-                        textDecoration: 'none',
-                        fontSize: '14px'
-                      }}
-                      onClick={() => setIsMobileOpen(false)}
-                    >
-                      {item}
-                    </Link>
-                  ))}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Other Mobile Menu Items */}
           {navigation.slice(1).map((item) => (
-            <Link
+            <Link 
               key={item.name}
-              to={item.href}
+              to={item.href} 
+              onClick={() => setIsMobileOpen(false)}
               style={{
                 display: 'block',
                 padding: '16px',
@@ -969,7 +798,6 @@ const EnhancedHeader: React.FC = () => {
                 fontWeight: '600',
                 transition: 'all 0.2s ease'
               }}
-              onClick={() => setIsMobileOpen(false)}
             >
               {item.name}
             </Link>
@@ -1046,50 +874,57 @@ const EnhancedHeader: React.FC = () => {
       {isSearchOpen && (
         <div style={{
           position: 'fixed',
-          inset: 0,
-          zIndex: 50,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          backdropFilter: 'blur(4px)',
+          zIndex: 1001,
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           justifyContent: 'center',
-          paddingTop: '120px'
+          backdropFilter: 'blur(10px)'
         }}>
           <div style={{ width: '100%', maxWidth: '600px', margin: '0 16px' }}>
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
                 placeholder="Buscar produtos..."
+                autoFocus
                 style={{
                   width: '100%',
-                  padding: '16px 24px',
+                  padding: '20px 60px 20px 20px',
                   fontSize: '18px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(20px)',
-                  borderRadius: '16px',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  backgroundColor: 'white',
+                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
                   outline: 'none'
                 }}
-                autoFocus
               />
-              <Search style={{
-                position: 'absolute',
-                right: '24px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'rgba(255, 255, 255, 0.6)',
-                width: '24px',
-                height: '24px'
-              }} />
+              <button
+                onClick={() => setIsSearchOpen(false)}
+                style={{
+                  position: 'absolute',
+                  right: '20px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#666'
+                }}
+              >
+                <X size={24} />
+              </button>
             </div>
             <div style={{ marginTop: '24px', textAlign: 'center' }}>
               <button
                 onClick={() => setIsSearchOpen(false)}
                 style={{
-                  color: 'rgba(255, 255, 255, 0.6)',
-                  backgroundColor: 'transparent',
+                  background: 'none',
                   border: 'none',
+                  color: 'white',
                   cursor: 'pointer',
                   fontSize: '14px'
                 }}
@@ -1104,27 +939,6 @@ const EnhancedHeader: React.FC = () => {
       {/* CSS Animations */}
       <style>
         {`
-          @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
-          }
-
-          @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-          }
-
-          @keyframes fadeIn {
-            from { 
-              opacity: 0; 
-              transform: translateX(-50%) translateY(-10px);
-            }
-            to { 
-              opacity: 1; 
-              transform: translateX(-50%) translateY(0);
-            }
-          }
-
           .desktop-menu {
             display: flex;
           }
@@ -1155,11 +969,6 @@ const EnhancedHeader: React.FC = () => {
           ::-webkit-scrollbar-thumb {
             background: #E16A3D;
             border-radius: 3px;
-          }
-
-          /* Ensure submenu stays visible on hover */
-          .dropdown-menu:hover {
-            display: block !important;
           }
         `}
       </style>
