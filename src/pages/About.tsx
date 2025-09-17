@@ -33,7 +33,7 @@ export default function About() {
       {/* Hero Section */}
       <section className="pt-20 pb-16 bg-gradient-to-br from-pine/5 to-sunset-orange/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="font-playfair text-4xl md:text-5xl font-bold text-foreground mb-6">
+          <h1 className="font-graffiti text-4xl md:text-5xl font-bold text-foreground mb-6">
             Nossa <span className="text-gradient-sunset">História</span>
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
@@ -48,7 +48,7 @@ export default function About() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-playfair text-3xl font-bold text-foreground mb-6">
+              <h2 className="font-block text-3xl font-bold text-foreground mb-6">
                 Como tudo começou
               </h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
@@ -90,7 +90,7 @@ export default function About() {
       <section className="py-16 bg-light-bg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-playfair text-3xl font-bold text-foreground mb-4">
+            <h2 className="font-graffiti text-3xl font-bold text-foreground mb-4">
               Nossos <span className="text-gradient-sunset">Valores</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -105,7 +105,7 @@ export default function About() {
                   <value.icon className="h-8 w-8 text-pine" />
                 </div>
                 
-                <h3 className="font-playfair text-xl font-bold text-foreground mb-4">
+                <h3 className="font-marker text-xl font-bold text-foreground mb-4">
                   {value.title}
                 </h3>
                 
@@ -122,7 +122,7 @@ export default function About() {
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-r from-pine to-nile-blue rounded-3xl p-12 text-white text-center">
-            <h2 className="font-playfair text-3xl font-bold mb-12">
+            <h2 className="font-graffiti text-3xl font-bold mb-12">
               Crescendo juntos
             </h2>
             
@@ -152,7 +152,7 @@ export default function About() {
       <section className="py-16 bg-light-bg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-playfair text-3xl font-bold text-foreground mb-4">
+            <h2 className="font-graffiti text-3xl font-bold text-foreground mb-4">
               Nosso <span className="text-gradient-sunset">Time</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -175,7 +175,7 @@ export default function About() {
                   />
                 </div>
                 
-                <h3 className="font-playfair text-xl font-bold text-foreground mb-2">
+                <h3 className="font-marker text-xl font-bold text-foreground mb-2">
                   {member.name}
                 </h3>
                 

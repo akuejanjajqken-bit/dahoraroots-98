@@ -43,7 +43,7 @@ export default function Cart() {
           </div>
           
           <div className="text-center">
-            <h1 className="font-playfair text-4xl font-bold text-foreground mb-4">
+            <h1 className="font-graffiti text-4xl font-bold text-foreground mb-4">
               Seu <span className="text-gradient-sunset">Carrinho</span>
             </h1>
             <p className="text-lg text-muted-foreground">
@@ -176,7 +176,7 @@ export default function Cart() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-soft p-6 sticky top-24">
-                <h2 className="font-playfair text-2xl font-bold text-nile-blue mb-6">
+                <h2 className="font-block text-2xl font-bold text-nile-blue mb-6">
                   Resumo do Pedido
                 </h2>
 

@@ -50,7 +50,7 @@ export default function Checkout() {
         <Header />
         <div className="pt-20 pb-8 bg-light-bg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="font-playfair text-4xl font-bold text-foreground mb-4">
+            <h1 className="font-graffiti text-4xl font-bold text-foreground mb-4">
               Carrinho Vazio
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
@@ -84,7 +84,7 @@ export default function Checkout() {
           </div>
           
           <div className="text-center">
-            <h1 className="font-playfair text-4xl font-bold text-foreground mb-4">
+            <h1 className="font-graffiti text-4xl font-bold text-foreground mb-4">
               Finalizar <span className="text-gradient-sunset">Compra</span>
             </h1>
             <p className="text-lg text-muted-foreground">
@@ -289,7 +289,7 @@ export default function Checkout() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-soft p-6 sticky top-24">
-              <h2 className="font-playfair text-2xl font-bold text-nile-blue mb-6">
+              <h2 className="font-block text-2xl font-bold text-nile-blue mb-6">
                 Resumo do Pedido
               </h2>
 

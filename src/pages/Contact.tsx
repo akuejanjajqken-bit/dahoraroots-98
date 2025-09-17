@@ -69,7 +69,7 @@ export default function Contact() {
       {/* Hero Section */}
       <section className="pt-20 pb-16 bg-gradient-to-br from-pine/5 to-sunset-orange/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="font-playfair text-4xl md:text-5xl font-bold text-foreground mb-6">
+          <h1 className="font-graffiti text-4xl md:text-5xl font-bold text-foreground mb-6">
             Entre em <span className="text-gradient-sunset">Contato</span>
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
@@ -84,7 +84,7 @@ export default function Contact() {
           
           {/* Contact Info */}
           <div className="lg:col-span-1">
-            <h2 className="font-playfair text-2xl font-bold text-foreground mb-8">
+            <h2 className="font-block text-2xl font-bold text-foreground mb-8">
               Fale conosco
             </h2>
             
@@ -112,7 +112,7 @@ export default function Contact() {
 
             {/* FAQ Link */}
             <div className="mt-12 p-6 bg-light-bg rounded-xl">
-              <h3 className="font-playfair text-lg font-bold text-foreground mb-3">
+              <h3 className="font-marker text-lg font-bold text-foreground mb-3">
                 Perguntas Frequentes
               </h3>
               <p className="text-muted-foreground mb-4">
@@ -132,7 +132,7 @@ export default function Contact() {
                   <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Send className="h-10 w-10 text-white" />
                   </div>
-                  <h3 className="font-playfair text-2xl font-bold text-foreground mb-4">
+                  <h3 className="font-graffiti text-2xl font-bold text-foreground mb-4">
                     Mensagem enviada com sucesso! 🎉
                   </h3>
                   <p className="text-muted-foreground">
@@ -141,7 +141,7 @@ export default function Contact() {
                 </div>
               ) : (
                 <>
-                  <h2 className="font-playfair text-2xl font-bold text-foreground mb-2">
+                  <h2 className="font-block text-2xl font-bold text-foreground mb-2">
                     Envie sua mensagem
                   </h2>
                   <p className="text-muted-foreground mb-8">
@@ -250,7 +250,7 @@ export default function Contact() {
 
         {/* Map Section */}
         <div className="mt-16 bg-light-bg rounded-2xl p-8 text-center">
-          <h2 className="font-playfair text-2xl font-bold text-foreground mb-4">
+          <h2 className="font-graffiti text-2xl font-bold text-foreground mb-4">
             Nosso Showroom
           </h2>
           <p className="text-muted-foreground mb-6">

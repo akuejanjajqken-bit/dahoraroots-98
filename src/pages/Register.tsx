@@ -139,7 +139,7 @@ export default function Register() {
           </div>
           
           <div className="text-center">
-            <h1 className="font-playfair text-4xl font-bold text-foreground mb-4">
+            <h1 className="font-graffiti text-4xl font-bold text-foreground mb-4">
               Criar sua <span className="text-gradient-sunset">Conta</span>
             </h1>
             <p className="text-lg text-muted-foreground">

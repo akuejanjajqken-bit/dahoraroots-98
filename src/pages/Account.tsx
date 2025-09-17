@@ -31,7 +31,7 @@ export default function Account() {
       <div className="pt-20 pb-8 bg-light-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="font-playfair text-4xl font-bold text-foreground mb-4">
+            <h1 className="font-graffiti text-4xl font-bold text-foreground mb-4">
               Minha <span className="text-gradient-sunset">Conta</span>
             </h1>
             <p className="text-lg text-muted-foreground">

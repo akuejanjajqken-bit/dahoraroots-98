@@ -80,7 +80,7 @@ export default function Products() {
           
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center">
-              <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mb-6">
+              <h1 className="font-graffiti text-4xl md:text-5xl font-bold text-white mb-6">
                 Nossa <span className="text-gradient-sunset">Coleção</span>
               </h1>
               <p className="text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
@@ -95,7 +95,7 @@ export default function Products() {
         <div className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="font-playfair text-3xl font-bold text-nile-blue mb-4">
+              <h2 className="font-block text-3xl font-bold text-nile-blue mb-4">
                 Explore por <span className="text-gradient-sunset">Categorias</span>
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -152,7 +152,7 @@ export default function Products() {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mb-6">
+            <h1 className="font-graffiti text-4xl md:text-5xl font-bold text-white mb-6">
               {currentCategory?.name}
             </h1>
             <p className="text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
