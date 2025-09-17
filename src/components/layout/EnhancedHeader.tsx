@@ -216,7 +216,7 @@ const EnhancedHeader: React.FC = () => {
                 position: 'absolute',
                 top: '100%',
                 left: '50%',
-                transform: 'translateX(-50%)',
+                transform: `translateX(-50%) translateY(${activeMenu === 'shop' ? '10px' : '0'})`,
                 width: '800px',
                 maxWidth: '90vw',
                 backgroundColor: 'white',
@@ -224,7 +224,6 @@ const EnhancedHeader: React.FC = () => {
                 boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
                 opacity: activeMenu === 'shop' ? 1 : 0,
                 visibility: activeMenu === 'shop' ? 'visible' : 'hidden',
-                transform: `translateX(-50%) translateY(${activeMenu === 'shop' ? '10px' : '0'})`,
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 overflow: 'hidden'
               }}>
