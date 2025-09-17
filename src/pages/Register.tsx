@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User, Phone, ArrowLeft } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -19,6 +19,15 @@ export default function Register() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { state, register, clearError } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Redireciona se já estiver logado
+  useEffect(() => {
+    if (state.isAuthenticated) {
+      const from = location.state?.from?.pathname || '/account';
+      navigate(from, { replace: true });
+    }
+  }, [state.isAuthenticated, navigate, location.state]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -88,7 +97,9 @@ export default function Register() {
     try {
       const { confirmPassword, ...registerData } = formData;
       await register(registerData);
-      navigate('/');
+      // Redireciona para a página de origem ou para /account
+      const from = location.state?.from?.pathname || '/account';
+      navigate(from, { replace: true });
     } catch (error) {
       // Error is handled by the context
     }

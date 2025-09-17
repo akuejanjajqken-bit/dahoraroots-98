@@ -15,32 +15,6 @@ export default function Account() {
     navigate('/');
   };
 
-  if (!state.isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <div className="pt-20 pb-8 bg-light-bg">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="font-playfair text-4xl font-bold text-foreground mb-4">
-              Acesso Negado
-            </h1>
-            <p className="text-lg text-muted-foreground mb-8">
-              Você precisa estar logado para acessar esta página.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Link to="/login" className="btn-cta">
-                Fazer Login
-              </Link>
-              <Link to="/register" className="btn-cta bg-sunset-orange hover:bg-sunset-orange/90">
-                Criar Conta
-              </Link>
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   const tabs = [
     { id: 'profile', name: 'Perfil', icon: User },
