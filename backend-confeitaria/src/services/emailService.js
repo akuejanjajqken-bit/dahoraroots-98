@@ -18,7 +18,7 @@ class EmailService {
    * Inicializa o transporter do nodemailer
    */
   initializeTransporter() {
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
       secure: process.env.SMTP_PORT == 465, // true para 465, false para outras portas
