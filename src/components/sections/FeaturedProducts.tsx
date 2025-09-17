@@ -1,6 +1,7 @@
 import { Star, ShoppingCart, Heart, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import SpotlightCard from "@/components/ui/spotlight-card";
+import AddToCartButton from "@/components/ui/AddToCartButton";
 import { useCart } from "@/contexts/CartContext";
 import stickersImage from "@/assets/stickers-collage.jpg";
 import sadhuImage from "@/assets/sadhu-products.jpg";
@@ -131,13 +132,13 @@ export default function FeaturedProducts() {
 
                 {/* Quick Add to Cart */}
                 <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                  <button 
-                    onClick={() => handleAddToCart(product)}
-                    className="w-full bg-white/20 backdrop-blur-sm text-white font-semibold px-4 py-2 rounded-lg border border-white/30 hover:bg-white/30 transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    <ShoppingCart className="h-4 w-4" />
-                    Adicionar
-                  </button>
+                  <AddToCartButton
+                    product={product}
+                    variant="secondary"
+                    size="small"
+                    onAddToCart={handleAddToCart}
+                    className="w-full"
+                  />
                 </div>
               </div>
 
@@ -167,7 +168,7 @@ export default function FeaturedProducts() {
                   </p>
                 </Link>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-4">
                   <span className="text-xl font-bold text-tangerine">
                     R$ {product.price.toFixed(2)}
                   </span>
@@ -177,6 +178,15 @@ export default function FeaturedProducts() {
                     </span>
                   )}
                 </div>
+
+                {/* Main Add to Cart Button */}
+                <AddToCartButton
+                  product={product}
+                  variant="primary"
+                  size="small"
+                  onAddToCart={handleAddToCart}
+                  className="w-full"
+                />
               </div>
             </SpotlightCard>
           ))}
