@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search, ShoppingCart, User, ChevronDown, 
   Menu, X, Sparkles, TrendingUp, Package,
-  Heart, Star, Zap, ArrowRight, LogOut
+  Heart, Star, Zap, ArrowRight, LogOut, LogIn
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import CartSidebar from '@/components/cart/CartSidebar';
@@ -16,9 +16,12 @@ const EnhancedHeader: React.FC = () => {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isSubmenuHovered, setIsSubmenuHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const navRef = useRef<HTMLElement>(null);
+  const submenuTimeout = useRef<NodeJS.Timeout | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const { state: cartState, toggleCart } = useCart();
   const { state: authState, logout } = useAuth();
 
@@ -30,6 +33,50 @@ const EnhancedHeader: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Clear timeout when component unmounts
+  useEffect(() => {
+    return () => {
+      if (submenuTimeout.current) {
+        clearTimeout(submenuTimeout.current);
+      }
+    };
+  }, []);
+
+  // Handle submenu hover with delay - FIXED HOVER LOGIC
+  const handleMenuEnter = (menu: string) => {
+    // Clear any existing timeout
+    if (submenuTimeout.current) {
+      clearTimeout(submenuTimeout.current);
+    }
+    setActiveMenu(menu);
+    setIsSubmenuHovered(true);
+  };
+
+  const handleMenuLeave = () => {
+    // Add small delay before closing to allow cursor to move to submenu
+    submenuTimeout.current = setTimeout(() => {
+      if (!isSubmenuHovered) {
+        setActiveMenu(null);
+      }
+    }, 100); // 100ms delay for smooth transition
+  };
+
+  const handleSubmenuEnter = () => {
+    // Clear timeout when entering submenu
+    if (submenuTimeout.current) {
+      clearTimeout(submenuTimeout.current);
+    }
+    setIsSubmenuHovered(true);
+  };
+
+  const handleSubmenuLeave = () => {
+    setIsSubmenuHovered(false);
+    // Close menu after leaving submenu
+    submenuTimeout.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 100);
+  };
 
   // Mouse tracking for gradient effect
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -163,11 +210,11 @@ const EnhancedHeader: React.FC = () => {
             height: '100%'
           }}>
             
-            {/* Shop with Mega Menu */}
+            {/* Shop with Mega Menu - FIXED HOVER LOGIC */}
             <div 
               className="menu-item"
-              onMouseEnter={() => setActiveMenu('shop')}
-              onMouseLeave={() => setActiveMenu(null)}
+              onMouseEnter={() => handleMenuEnter('shop')}
+              onMouseLeave={handleMenuLeave}
               style={{ position: 'relative', height: '100%' }}
             >
               <Link
@@ -212,23 +259,27 @@ const EnhancedHeader: React.FC = () => {
                 }} />
               </Link>
 
-              {/* Mega Dropdown Menu */}
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '800px',
-                maxWidth: '90vw',
-                backgroundColor: 'white',
-                borderRadius: '20px',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-                opacity: activeMenu === 'shop' ? 1 : 0,
-                visibility: activeMenu === 'shop' ? 'visible' : 'hidden',
-                transform: `translateX(-50%) translateY(${activeMenu === 'shop' ? '10px' : '0'})`,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                overflow: 'hidden'
-              }}>
+              {/* Mega Dropdown Menu - STAYS OPEN ON HOVER */}
+              {activeMenu === 'shop' && (
+                <div 
+                  onMouseEnter={handleSubmenuEnter}
+                  onMouseLeave={handleSubmenuLeave}
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '800px',
+                    maxWidth: '90vw',
+                    backgroundColor: 'white',
+                    borderRadius: '20px',
+                    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+                    marginTop: '0', // No gap between menu and submenu
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    overflow: 'hidden',
+                    animation: 'fadeIn 0.3s ease'
+                  }}
+                >
                 {/* Gradient Header */}
                 <div style={{
                   background: 'linear-gradient(135deg, #E16A3D 0%, #FEA450 100%)',
@@ -350,7 +401,8 @@ const EnhancedHeader: React.FC = () => {
                     Ver Todas as Promoções →
                   </Link>
                 </div>
-              </div>
+                </div>
+              )}
             </div>
 
             {/* Other Menu Items */}
@@ -438,38 +490,70 @@ const EnhancedHeader: React.FC = () => {
               <Search size={20} />
             </button>
 
-            {/* User Account */}
-            <div
-              className="relative"
-              onMouseEnter={() => setIsUserDropdownOpen(true)}
-              onMouseLeave={() => setIsUserDropdownOpen(false)}
-            >
-              <button style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '50%',
-                border: 'none',
-                backgroundColor: '#FFF9F5',
-                color: '#043E52',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#016A6D';
-                e.currentTarget.style.color = 'white';
-                e.currentTarget.style.transform = 'scale(1.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#FFF9F5';
-                e.currentTarget.style.color = '#043E52';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <User size={20} />
-            </button>
+            {/* LOGIN BUTTON - FIXED WITH PROPER NAVIGATION */}
+            {!authState.isAuthenticated ? (
+              <Link 
+                to="/login"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  backgroundColor: '#FFF9F5',
+                  borderRadius: '8px',
+                  color: '#043E52',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s ease',
+                  border: '2px solid transparent'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#E16A3D';
+                  e.currentTarget.style.color = 'white';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#FFF9F5';
+                  e.currentTarget.style.color = '#043E52';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                <LogIn size={18} />
+                <span>Login</span>
+              </Link>
+            ) : (
+              <div
+                className="relative"
+                onMouseEnter={() => setIsUserDropdownOpen(true)}
+                onMouseLeave={() => setIsUserDropdownOpen(false)}
+              >
+                <button style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '50%',
+                  border: 'none',
+                  backgroundColor: '#FFF9F5',
+                  color: '#043E52',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#016A6D';
+                  e.currentTarget.style.color = 'white';
+                  e.currentTarget.style.transform = 'scale(1.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#FFF9F5';
+                  e.currentTarget.style.color = '#043E52';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                <User size={20} />
+              </button>
             
             {/* User Dropdown */}
             {isUserDropdownOpen && (
@@ -600,6 +684,7 @@ const EnhancedHeader: React.FC = () => {
                   </>
                 )}
               </div>
+            )}
             )}
 
             {/* Cart with Badge */}
@@ -749,6 +834,33 @@ const EnhancedHeader: React.FC = () => {
 
         {/* Mobile Menu Items */}
         <div style={{ padding: '20px' }}>
+          {/* Mobile Login Button - PROMINENT AT TOP */}
+          {!authState.isAuthenticated && (
+            <Link
+              to="/login"
+              onClick={() => setIsMobileOpen(false)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                width: '100%',
+                padding: '16px',
+                backgroundColor: '#E16A3D',
+                color: 'white',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '16px',
+                marginBottom: '20px',
+                boxShadow: '0 4px 12px rgba(225, 106, 61, 0.3)'
+              }}
+            >
+              <LogIn size={20} />
+              Entrar / Cadastrar
+            </Link>
+          )}
+
           {/* Shop with Accordion Submenu */}
           <div style={{ marginBottom: '16px' }}>
             <button
@@ -852,32 +964,70 @@ const EnhancedHeader: React.FC = () => {
             </Link>
           ))}
 
-          {/* Login Button */}
-          <Link
-            to="/login"
-            style={{
-              width: '100%',
-              padding: '16px',
-              marginTop: '24px',
-              backgroundColor: '#E16A3D',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              boxShadow: '0 4px 12px rgba(225, 106, 61, 0.3)',
-              textDecoration: 'none'
-            }}
-            onClick={() => setIsMobileOpen(false)}
-          >
-            <User size={20} />
-            Fazer Login
-          </Link>
+          {/* Mobile User Menu if Authenticated */}
+          {authState.isAuthenticated && (
+            <>
+              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #F5F5F5' }} />
+              <Link 
+                to="/account" 
+                onClick={() => setIsMobileOpen(false)}
+                style={{
+                  display: 'block',
+                  padding: '16px',
+                  backgroundColor: '#FAFAFA',
+                  borderRadius: '12px',
+                  marginBottom: '12px',
+                  color: '#043E52',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Minha Conta
+              </Link>
+              <Link 
+                to="/orders" 
+                onClick={() => setIsMobileOpen(false)}
+                style={{
+                  display: 'block',
+                  padding: '16px',
+                  backgroundColor: '#FAFAFA',
+                  borderRadius: '12px',
+                  marginBottom: '12px',
+                  color: '#043E52',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Meus Pedidos
+              </Link>
+              <button
+                onClick={() => {
+                  logout();
+                  setIsMobileOpen(false);
+                }}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  backgroundColor: '#FAFAFA',
+                  borderRadius: '12px',
+                  marginBottom: '12px',
+                  color: '#EF4444',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                Sair
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -953,6 +1103,17 @@ const EnhancedHeader: React.FC = () => {
             50% { transform: scale(1.1); }
           }
 
+          @keyframes fadeIn {
+            from { 
+              opacity: 0; 
+              transform: translateX(-50%) translateY(-10px);
+            }
+            to { 
+              opacity: 1; 
+              transform: translateX(-50%) translateY(0);
+            }
+          }
+
           .desktop-menu {
             display: flex;
           }
@@ -983,6 +1144,11 @@ const EnhancedHeader: React.FC = () => {
           ::-webkit-scrollbar-thumb {
             background: #E16A3D;
             border-radius: 3px;
+          }
+
+          /* Ensure submenu stays visible on hover */
+          .dropdown-menu:hover {
+            display: block !important;
           }
         `}
       </style>
