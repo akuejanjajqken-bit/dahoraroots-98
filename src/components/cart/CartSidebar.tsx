@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 export default function CartSidebar() {
   const { state, removeItem, updateQuantity, clearCart, toggleCart } = useCart();
 
-  const handleQuantityChange = (id: number, newQuantity: number) => {
+  const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       removeItem(id);
     } else {

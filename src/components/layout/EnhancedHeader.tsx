@@ -150,7 +150,7 @@ const EnhancedHeader: React.FC = () => {
           '--mouse-y': `${mousePosition.y}%`
         } as React.CSSProperties & { '--mouse-x': string; '--mouse-y': string }}
       >
-        {/* Animated Background Gradient (follows mouse) */}
+        {/* Animated Background Gradient */}
         <div style={{ 
           position: 'absolute',
           top: 0,
@@ -177,8 +177,7 @@ const EnhancedHeader: React.FC = () => {
           justifyContent: 'space-between',
           position: 'relative'
         }}>
-          
-          {/* Logo with animation */}
+          {/* Logo */}
           <Link 
             to="/" 
             style={{
@@ -280,6 +279,18 @@ const EnhancedHeader: React.FC = () => {
                     animation: 'fadeIn 0.3s ease'
                   }}
                 >
+                left: '50%',
+                transform: `translateX(-50%) translateY(${activeMenu === 'shop' ? '10px' : '0'})`,
+                width: '800px',
+                maxWidth: '90vw',
+                backgroundColor: 'white',
+                borderRadius: '20px',
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+                opacity: activeMenu === 'shop' ? 1 : 0,
+                visibility: activeMenu === 'shop' ? 'visible' : 'hidden',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                overflow: 'hidden'
+              }}>
                 {/* Gradient Header */}
                 <div style={{
                   background: 'linear-gradient(135deg, #E16A3D 0%, #FEA450 100%)',

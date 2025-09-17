@@ -92,9 +92,6 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
             ? 'linear-gradient(135deg, #9CA3AF 0%, #D1D5DB 100%)'
             : 'linear-gradient(135deg, #E16A3D 0%, #FEA450 100%)',
           color: '#FFFFFF',
-          boxShadow: disabled 
-            ? '0 2px 8px rgba(156, 163, 175, 0.2)'
-            : '0 4px 14px rgba(225, 106, 61, 0.3)',
           transform: isHovered && !disabled ? 'translateY(-2px)' : 'translateY(0)',
           boxShadow: isHovered && !disabled 
             ? '0 8px 25px rgba(225, 106, 61, 0.4)'
@@ -285,7 +282,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }

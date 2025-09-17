@@ -7,7 +7,7 @@ import { useCart } from '@/contexts/CartContext';
 export default function Cart() {
   const { state, removeItem, updateQuantity, clearCart } = useCart();
 
-  const handleQuantityChange = (id: number, newQuantity: number) => {
+  const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       removeItem(id);
     } else {

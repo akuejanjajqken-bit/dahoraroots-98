@@ -1,5 +1,5 @@
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   originalPrice?: number;
@@ -28,7 +28,7 @@ export const categoriesData: Category[] = [
     iconName: "Heart",
     products: [
       {
-        id: 1,
+        id: '1',
         name: "Blunts de Tabaco Premium",
         description: "Blunts artesanais de tabaco natural com sabores únicos",
         price: 45.99,
@@ -40,7 +40,7 @@ export const categoriesData: Category[] = [
         badge: "Bestseller"
       },
       {
-        id: 2,
+        id: '2',
         name: "Kit Completo Iniciante",
         description: "Kit com todos os acessórios essenciais para começar",
         price: 199.99,
@@ -52,7 +52,7 @@ export const categoriesData: Category[] = [
         badge: "Oferta"
       },
       {
-        id: 3,
+        id: '3',
         name: "Slap Woods Wraps",
         description: "Wraps premium com sabor natural de tabaco",
         price: 35.99,
@@ -71,7 +71,7 @@ export const categoriesData: Category[] = [
     iconName: "Shield",
     products: [
       {
-        id: 4,
+        id: '4',
         name: "Coleção Sadhu Completa",
         description: "Produtos exclusivos da marca Sadhu para experiências autênticas",
         price: 189.99,
@@ -82,7 +82,7 @@ export const categoriesData: Category[] = [
         badge: "Novo"
       },
       {
-        id: 5,
+        id: '5',
         name: "Case Protetor Sadhu",
         description: "Case resistente com design único da Sadhu",
         price: 89.99,
@@ -100,7 +100,7 @@ export const categoriesData: Category[] = [
     iconName: "Zap",
     products: [
       {
-        id: 6,
+        id: '6',
         name: "Dixavadores Especiais",
         description: "Dixavadores únicos para uma experiência diferenciada",
         price: 24.99,
@@ -111,7 +111,7 @@ export const categoriesData: Category[] = [
         reviews: 234
       },
       {
-        id: 7,
+        id: '7',
         name: "Triturador Elétrico Premium",
         description: "Triturador elétrico com potência e praticidade",
         price: 129.99,
@@ -131,7 +131,7 @@ export const categoriesData: Category[] = [
     iconName: "Star",
     products: [
       {
-        id: 8,
+        id: '8',
         name: "Isqueiro Clipper Premium",
         description: "Isqueiro refilável com design clássico",
         price: 19.99,
@@ -149,7 +149,7 @@ export const categoriesData: Category[] = [
     iconName: "Package",
     products: [
       {
-        id: 9,
+        id: '9',
         name: "Sedas Premium",
         description: "Papéis de enrolar de alta qualidade",
         price: 12.99,
@@ -167,7 +167,7 @@ export const categoriesData: Category[] = [
     iconName: "Droplets",
     products: [
       {
-        id: 10,
+        id: '10',
         name: "Piteiras de Papel Premium",
         description: "Piteiras de papel de alta qualidade",
         price: 8.99,
@@ -185,7 +185,7 @@ export const categoriesData: Category[] = [
     iconName: "Award",
     products: [
       {
-        id: 11,
+        id: '11',
         name: "Piteiras de Vidro Artesanais",
         description: "Piteiras de vidro borossilicato feitas à mão por artesãos",
         price: 79.99,
@@ -204,7 +204,7 @@ export const categoriesData: Category[] = [
     iconName: "Heart",
     products: [
       {
-        id: 12,
+        id: '12',
         name: "Cuias de Vidro Premium",
         description: "Cuias de vidro borossilicato com design único",
         price: 65.99,
@@ -222,7 +222,7 @@ export const categoriesData: Category[] = [
     iconName: "Scissors",
     products: [
       {
-        id: 13,
+        id: '13',
         name: "Tesouras Premium",
         description: "Tesouras afiadas com design ergonômico",
         price: 25.99,
@@ -240,7 +240,7 @@ export const categoriesData: Category[] = [
     iconName: "Package",
     products: [
       {
-        id: 14,
+        id: '14',
         name: "Potes Herméticos Premium",
         description: "Potes herméticos com vedação perfeita",
         price: 35.99,
@@ -258,7 +258,7 @@ export const categoriesData: Category[] = [
     iconName: "Clock",
     products: [
       {
-        id: 15,
+        id: '15',
         name: "Cinzeiros Modernos",
         description: "Cinzeiros com design contemporâneo",
         price: 45.99,
@@ -276,7 +276,7 @@ export const categoriesData: Category[] = [
     iconName: "Droplets",
     products: [
       {
-        id: 16,
+        id: '16',
         name: "Bong Premium",
         description: "Bong de vidro borossilicato com percolador",
         price: 199.99,

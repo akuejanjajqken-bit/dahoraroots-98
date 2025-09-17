@@ -1,19 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Heart, Shield, Zap, Award, Package, Droplets, Scissors, Clock } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
-  category: string;
-  description: string;
-  rating: number;
-  reviews: number;
-  badge?: string;
-}
+import { Product } from '@/data/products';
 
 interface CategorySectionProps {
   categoryName: string;

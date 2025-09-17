@@ -10,7 +10,7 @@ import piteirasImage from "@/assets/piteiras-vidro.jpg";
 
 const featuredProducts = [
   {
-    id: 1,
+    id: "1",
     name: "Blunts de Tabaco Premium",
     description: "Blunts artesanais de tabaco natural com sabores únicos",
     price: 45.99,
@@ -22,7 +22,7 @@ const featuredProducts = [
     category: "Blunts"
   },
   {
-    id: 2,
+    id: "2",
     name: "Coleção Sadhu Completa",
     description: "Produtos exclusivos da marca Sadhu para experiências autênticas",
     price: 189.99,
@@ -34,7 +34,7 @@ const featuredProducts = [
     category: "Sadhu"
   },
   {
-    id: 3,
+    id: "3",
     name: "Dixavadores Especiais",
     description: "Dixavadores únicos para uma experiência diferenciada",
     price: 24.99,
@@ -46,7 +46,7 @@ const featuredProducts = [
     category: "Dixavadores"
   },
   {
-    id: 4,
+    id: "4",
     name: "Piteiras de Vidro Artesanais",
     description: "Piteiras de vidro borossilicato feitas à mão por artesãos",
     price: 79.99,
