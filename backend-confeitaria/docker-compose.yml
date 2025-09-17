@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # Banco de dados MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: confeitaria-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: confeitaria_db
+      MYSQL_USER: confeitaria
+      MYSQL_PASSWORD: confeitaria123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - confeitaria-network
+
+  # Redis para cache
+  redis:
+    image: redis:7-alpine
+    container_name: confeitaria-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - confeitaria-network
+
+  # Aplicação Node.js
+  app:
+    build: .
+    container_name: confeitaria-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: mysql
+      DB_USER: confeitaria
+      DB_PASSWORD: confeitaria123
+      DB_NAME: confeitaria_db
+      DB_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: dahora_roots_confeitaria_jwt_secret_2024
+      JWT_EXPIRES_IN: 24h
+      JWT_REFRESH_EXPIRES_IN: 7d
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: contato@dahoraroots.com
+      SMTP_PASS: app_password_aqui
+      API_URL: http://localhost:3000
+      FRONTEND_URL: http://localhost:3001
+      COLOR_PRIMARY: "#E16A3D"
+      COLOR_SECONDARY: "#FEA450"
+      COLOR_ACCENT: "#016A6D"
+      COLOR_DARK: "#043E52"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - confeitaria-network
+    volumes:
+      - ./uploads:/app/uploads
+
+  # Nginx como proxy reverso
+  nginx:
+    image: nginx:alpine
+    container_name: confeitaria-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    networks:
+      - confeitaria-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  confeitaria-network:
+    driver: bridge
