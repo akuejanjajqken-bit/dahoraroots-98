@@ -16,7 +16,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
 import ButtonDemo from "./pages/ButtonDemo";
+import HeaderDemo from "./pages/HeaderDemo";
 import NotFound from "./pages/NotFound";
+import EnhancedHeader from "./components/layout/EnhancedHeader";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
+            <EnhancedHeader />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/products" element={<Products />} />
@@ -41,6 +44,7 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/account" element={<Account />} />
               <Route path="/button-demo" element={<ButtonDemo />} />
+              <Route path="/header-demo" element={<HeaderDemo />} />
               <Route path="/blog" element={<NotFound />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
