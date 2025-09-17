@@ -103,7 +103,7 @@ const EnhancedHeader: React.FC = () => {
           '--mouse-y': `${mousePosition.y}%`
         } as React.CSSProperties & { '--mouse-x': string; '--mouse-y': string }}
       >
-        {/* Animated Background Gradient (follows mouse) */}
+        {/* Animated Background Gradient */}
         <div style={{ 
           position: 'absolute',
           top: 0,
@@ -130,8 +130,7 @@ const EnhancedHeader: React.FC = () => {
           justifyContent: 'space-between',
           position: 'relative'
         }}>
-          
-          {/* Logo with animation */}
+          {/* Logo */}
           <Link 
             to="/" 
             style={{
@@ -601,6 +600,7 @@ const EnhancedHeader: React.FC = () => {
                 )}
               </div>
             )}
+            </div>
 
             {/* Cart with Badge */}
             <button 
