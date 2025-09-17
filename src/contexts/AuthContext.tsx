@@ -111,15 +111,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           dispatch({ type: 'AUTH_START' });
           
-          const response = await fetch('http://172.30.0.2:3001/api/auth/verify', {
+          const response = await fetch('http://localhost:3000/api/auth/profile', {
             headers: {
               'Authorization': `Bearer ${token}`,
             },
           });
           
           if (response.ok) {
-            const user = await response.json();
-            dispatch({ type: 'AUTH_SUCCESS', payload: user });
+            const result = await response.json();
+            const user = result.data.user;
+            
+            // Transformar dados do backend para o formato esperado pelo frontend
+            const frontendUser = {
+              id: user.id,
+              email: user.email,
+              firstName: user.nome_completo.split(' ')[0],
+              lastName: user.nome_completo.split(' ').slice(1).join(' '),
+              phone: user.telefone,
+              createdAt: user.created_at
+            };
+            
+            dispatch({ type: 'AUTH_SUCCESS', payload: frontendUser });
           } else {
             localStorage.removeItem('dahora-roots-token');
             dispatch({ type: 'AUTH_FAILURE', payload: 'Sessão expirada' });
@@ -138,24 +150,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       dispatch({ type: 'AUTH_START' });
       
-      const response = await fetch('http://172.30.0.2:3001/api/auth/login', {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, senha: password }),
       });
       
       if (response.ok) {
-        const { user, token } = await response.json();
+        const result = await response.json();
+        const { user, token } = result.data;
         localStorage.setItem('dahora-roots-token', token);
-        dispatch({ type: 'AUTH_SUCCESS', payload: user });
+        
+        // Transformar dados do backend para o formato esperado pelo frontend
+        const frontendUser = {
+          id: user.id,
+          email: user.email,
+          firstName: user.nome_completo.split(' ')[0],
+          lastName: user.nome_completo.split(' ').slice(1).join(' '),
+          phone: user.telefone,
+          createdAt: user.created_at
+        };
+        
+        dispatch({ type: 'AUTH_SUCCESS', payload: frontendUser });
       } else {
         const error = await response.json();
         dispatch({ type: 'AUTH_FAILURE', payload: error.message || 'Erro ao fazer login' });
       }
     } catch (error) {
-      dispatch({ type: 'AUTH_FAILURE', payload: 'Erro de conexão' });
+      console.error('Erro no login:', error);
+      dispatch({ type: 'AUTH_FAILURE', payload: 'Erro de conexão. Verifique se o servidor está rodando.' });
     }
   };
 
@@ -163,24 +188,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       dispatch({ type: 'AUTH_START' });
       
-      const response = await fetch('http://172.30.0.2:3001/api/auth/register', {
+      // Transformar dados do frontend para o formato esperado pelo backend
+      const backendData = {
+        nome_completo: `${userData.firstName} ${userData.lastName}`,
+        email: userData.email,
+        senha: userData.password,
+        telefone: userData.phone || null,
+        termos_aceitos: true,
+        newsletter: false
+      };
+      
+      const response = await fetch('http://localhost:3000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(backendData),
       });
       
       if (response.ok) {
-        const { user, token } = await response.json();
+        const result = await response.json();
+        const { user, token } = result.data;
         localStorage.setItem('dahora-roots-token', token);
-        dispatch({ type: 'AUTH_SUCCESS', payload: user });
+        
+        // Transformar dados do backend para o formato esperado pelo frontend
+        const frontendUser = {
+          id: user.id,
+          email: user.email,
+          firstName: user.nome_completo.split(' ')[0],
+          lastName: user.nome_completo.split(' ').slice(1).join(' '),
+          phone: user.telefone,
+          createdAt: user.created_at
+        };
+        
+        dispatch({ type: 'AUTH_SUCCESS', payload: frontendUser });
       } else {
         const error = await response.json();
         dispatch({ type: 'AUTH_FAILURE', payload: error.message || 'Erro ao criar conta' });
       }
     } catch (error) {
-      dispatch({ type: 'AUTH_FAILURE', payload: 'Erro de conexão' });
+      console.error('Erro no registro:', error);
+      dispatch({ type: 'AUTH_FAILURE', payload: 'Erro de conexão. Verifique se o servidor está rodando.' });
     }
   };
 
