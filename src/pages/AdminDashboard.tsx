@@ -73,10 +73,10 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="font-graffiti text-2xl text-foreground">
-                Admin Dashboard
+              <h1 className="font-graffiti text-3xl text-foreground">
+                Admin <span className="text-gradient-sunset">Dashboard</span>
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground font-urban">
                 Bem-vindo, {state.user?.name}
               </p>
             </div>
@@ -95,52 +95,52 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-soft">
+          <div className="bg-white rounded-xl p-6 shadow-soft hover:shadow-deep transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total de Usuários</p>
-                <p className="text-3xl font-bold text-foreground">{stats.totalUsers}</p>
+                <p className="text-sm font-medium text-muted-foreground font-urban">Total de Usuários</p>
+                <p className="text-3xl font-bold text-foreground font-block">{stats.totalUsers}</p>
               </div>
-              <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="h-6 w-6 text-blue-600" />
+              <div className="h-12 w-12 bg-pine/10 rounded-lg flex items-center justify-center">
+                <Users className="h-6 w-6 text-pine" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-soft">
+          <div className="bg-white rounded-xl p-6 shadow-soft hover:shadow-deep transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total de Pedidos</p>
-                <p className="text-3xl font-bold text-foreground">{stats.totalOrders}</p>
+                <p className="text-sm font-medium text-muted-foreground font-urban">Total de Pedidos</p>
+                <p className="text-3xl font-bold text-foreground font-block">{stats.totalOrders}</p>
               </div>
-              <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <ShoppingCart className="h-6 w-6 text-green-600" />
+              <div className="h-12 w-12 bg-sunset-orange/10 rounded-lg flex items-center justify-center">
+                <ShoppingCart className="h-6 w-6 text-sunset-orange" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-soft">
+          <div className="bg-white rounded-xl p-6 shadow-soft hover:shadow-deep transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total de Produtos</p>
-                <p className="text-3xl font-bold text-foreground">{stats.totalProducts}</p>
+                <p className="text-sm font-medium text-muted-foreground font-urban">Total de Produtos</p>
+                <p className="text-3xl font-bold text-foreground font-block">{stats.totalProducts}</p>
               </div>
-              <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Package className="h-6 w-6 text-purple-600" />
+              <div className="h-12 w-12 bg-tangerine/10 rounded-lg flex items-center justify-center">
+                <Package className="h-6 w-6 text-tangerine" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-soft">
+          <div className="bg-white rounded-xl p-6 shadow-soft hover:shadow-deep transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Receita Total</p>
-                <p className="text-3xl font-bold text-foreground">
+                <p className="text-sm font-medium text-muted-foreground font-urban">Receita Total</p>
+                <p className="text-3xl font-bold text-foreground font-block">
                   R$ {stats.totalRevenue.toFixed(2)}
                 </p>
               </div>
-              <div className="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="h-6 w-6 text-yellow-600" />
+              <div className="h-12 w-12 bg-nile-blue/10 rounded-lg flex items-center justify-center">
+                <DollarSign className="h-6 w-6 text-nile-blue" />
               </div>
             </div>
           </div>
@@ -148,19 +148,19 @@ export default function AdminDashboard() {
 
         {/* Admin Actions */}
         <div className="bg-white rounded-xl p-6 shadow-soft">
-          <h2 className="font-block text-xl text-foreground mb-4">Ações Administrativas</h2>
+          <h2 className="font-graffiti text-2xl text-foreground mb-4">Ações <span className="text-gradient-sunset">Administrativas</span></h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-pine hover:bg-pine/5 transition-colors">
-              <Package className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600">Gerenciar Produtos</p>
+            <button className="p-4 border-2 border-dashed border-sunset-orange/30 rounded-lg hover:border-sunset-orange hover:bg-sunset-orange/5 transition-colors group">
+              <Package className="h-8 w-8 text-sunset-orange/60 group-hover:text-sunset-orange mx-auto mb-2" />
+              <p className="text-sm font-medium text-foreground font-urban">Gerenciar Produtos</p>
             </button>
-            <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-pine hover:bg-pine/5 transition-colors">
-              <Users className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600">Gerenciar Usuários</p>
+            <button className="p-4 border-2 border-dashed border-pine/30 rounded-lg hover:border-pine hover:bg-pine/5 transition-colors group">
+              <Users className="h-8 w-8 text-pine/60 group-hover:text-pine mx-auto mb-2" />
+              <p className="text-sm font-medium text-foreground font-urban">Gerenciar Usuários</p>
             </button>
-            <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-pine hover:bg-pine/5 transition-colors">
-              <ShoppingCart className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600">Gerenciar Pedidos</p>
+            <button className="p-4 border-2 border-dashed border-tangerine/30 rounded-lg hover:border-tangerine hover:bg-tangerine/5 transition-colors group">
+              <ShoppingCart className="h-8 w-8 text-tangerine/60 group-hover:text-tangerine mx-auto mb-2" />
+              <p className="text-sm font-medium text-foreground font-urban">Gerenciar Pedidos</p>
             </button>
           </div>
         </div>

@@ -4,413 +4,575 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-const JWT_SECRET = process.env.JWT_SECRET || 'dahora-roots-secret-key';
+const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({ 
+  origin: 'http://localhost:5173', // Your React app URL
+  credentials: true 
+}));
 app.use(express.json());
 
-// Database setup
-const dbPath = path.join(__dirname, 'database.db');
-const db = new sqlite3.Database(dbPath);
-
-// Initialize database
-const fs = require('fs');
-const sqlPath = path.join(__dirname, 'database.sql');
-const sql = fs.readFileSync(sqlPath, 'utf8');
-db.exec(sql);
-
-// Auth middleware
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ message: 'Token de acesso necessário' });
+// Create/Connect to SQLite Database
+const db = new sqlite3.Database('./database.sqlite', (err) => {
+  if (err) {
+    console.error('Error opening database:', err);
+  } else {
+    console.log('✅ Connected to SQLite database');
+    initializeDatabase();
   }
+});
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
+// Initialize Database Tables
+function initializeDatabase() {
+  // Create users table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      name TEXT,
+      role TEXT DEFAULT 'user',
+      phone TEXT,
+      cpf TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      last_login DATETIME
+    )
+  `, (err) => {
     if (err) {
-      return res.status(403).json({ message: 'Token inválido' });
+      console.error('Error creating users table:', err);
+    } else {
+      console.log('✅ Users table ready');
+      createAdminAccount();
     }
-    req.user = user;
-    next();
   });
-};
 
-// Routes
+  // Create sessions table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      token TEXT UNIQUE,
+      expires_at DATETIME,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users (id)
+    )
+  `);
 
-// Auth routes
-app.post('/api/auth/register', async (req, res) => {
+  // Create orders table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS orders (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      total REAL,
+      status TEXT DEFAULT 'pending',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users (id)
+    )
+  `);
+
+  // Create products table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS products (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      description TEXT,
+      price REAL NOT NULL,
+      stock INTEGER DEFAULT 0,
+      category TEXT,
+      image_url TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Create cart table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS cart (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      product_id INTEGER NOT NULL,
+      quantity INTEGER DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users (id),
+      FOREIGN KEY (product_id) REFERENCES products (id)
+    )
+  `);
+}
+
+// Create Admin Account if not exists
+async function createAdminAccount() {
+  const adminEmail = 'arrkkhecorp@gmail.com';
+  const adminPassword = 'Dahoraroots2025*';
+
+  db.get('SELECT * FROM users WHERE email = ?', [adminEmail], async (err, user) => {
+    if (!user) {
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      db.run(
+        'INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)',
+        [adminEmail, hashedPassword, 'Administrador Master', 'admin'],
+        (err) => {
+          if (err) {
+            console.error('Error creating admin:', err);
+          } else {
+            console.log('✅ Admin account created successfully');
+            console.log('   Email: arrkkhecorp@gmail.com');
+            console.log('   Password: Dahoraroots2025*');
+          }
+        }
+      );
+    } else {
+      console.log('✅ Admin account already exists');
+    }
+  });
+
+  // Add sample products
+  addSampleProducts();
+}
+
+// Add sample products
+function addSampleProducts() {
+  const sampleProducts = [
+    {
+      name: 'Seda OCB Premium',
+      description: 'Papel de seda premium para enrolar',
+      price: 12.90,
+      stock: 50,
+      category: 'papéis',
+      image_url: '/api/placeholder/300/300'
+    },
+    {
+      name: 'Triturador Elétrico',
+      description: 'Triturador elétrico de alta qualidade',
+      price: 89.90,
+      stock: 20,
+      category: 'acessórios',
+      image_url: '/api/placeholder/300/300'
+    },
+    {
+      name: 'Blunt de Tabaco',
+      description: 'Blunt de tabaco natural premium',
+      price: 18.90,
+      stock: 30,
+      category: 'blunts',
+      image_url: '/api/placeholder/300/300'
+    },
+    {
+      name: 'Kit Completo',
+      description: 'Kit completo com todos os acessórios',
+      price: 149.90,
+      stock: 15,
+      category: 'kits',
+      image_url: '/api/placeholder/300/300'
+    }
+  ];
+
+  sampleProducts.forEach(product => {
+    db.get('SELECT * FROM products WHERE name = ?', [product.name], (err, existing) => {
+      if (!existing) {
+        db.run(
+          'INSERT INTO products (name, description, price, stock, category, image_url) VALUES (?, ?, ?, ?, ?, ?)',
+          [product.name, product.description, product.price, product.stock, product.category, product.image_url],
+          (err) => {
+            if (err) {
+              console.error('Error adding sample product:', err);
+            } else {
+              console.log(`✅ Sample product added: ${product.name}`);
+            }
+          }
+        );
+      }
+    });
+  });
+}
+
+// ================== AUTH ROUTES ==================
+
+// LOGIN ROUTE
+app.post('/api/auth/login', async (req, res) => {
+  console.log('Login attempt:', req.body.email);
+  const { email, password } = req.body;
+
   try {
-    const { firstName, lastName, email, password, phone } = req.body;
-
-    // Check if user already exists
-    db.get('SELECT id FROM users WHERE email = ?', [email], async (err, row) => {
+    // Find user in database
+    db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
       if (err) {
-        return res.status(500).json({ message: 'Erro interno do servidor' });
+        console.error('Database error:', err);
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Erro no servidor' 
+        });
       }
 
-      if (row) {
-        return res.status(400).json({ message: 'E-mail já cadastrado' });
+      if (!user) {
+        console.log('User not found:', email);
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Email ou senha incorretos' 
+        });
+      }
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        console.log('Invalid password for:', email);
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Email ou senha incorretos' 
+        });
+      }
+
+      // Generate JWT token
+      const token = jwt.sign(
+        { 
+          id: user.id, 
+          email: user.email, 
+          role: user.role 
+        },
+        process.env.JWT_SECRET || 'your-secret-key-change-this',
+        { expiresIn: '7d' }
+      );
+
+      // Update last login
+      db.run('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?', [user.id]);
+
+      // Send response
+      console.log('Login successful:', email, 'Role:', user.role);
+      res.json({
+        success: true,
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role
+        },
+        redirectTo: user.role === 'admin' ? '/admin/dashboard' : '/'
+      });
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Erro ao processar login' 
+    });
+  }
+});
+
+// REGISTER ROUTE
+app.post('/api/auth/register', async (req, res) => {
+  const { email, password, name, phone, cpf } = req.body;
+
+  try {
+    // Check if user exists
+    db.get('SELECT * FROM users WHERE email = ?', [email], async (err, existingUser) => {
+      if (existingUser) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Email já cadastrado' 
+        });
       }
 
       // Hash password
-      const saltRounds = 10;
-      const passwordHash = await bcrypt.hash(password, saltRounds);
-
-      // Insert user
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
+      // Insert new user
       db.run(
-        'INSERT INTO users (first_name, last_name, email, password_hash, phone) VALUES (?, ?, ?, ?, ?)',
-        [firstName, lastName, email, passwordHash, phone],
+        'INSERT INTO users (email, password, name, phone, cpf, role) VALUES (?, ?, ?, ?, ?, ?)',
+        [email, hashedPassword, name, phone, cpf, 'user'],
         function(err) {
           if (err) {
-            return res.status(500).json({ message: 'Erro ao criar usuário' });
+            console.error('Error creating user:', err);
+            return res.status(500).json({ 
+              success: false, 
+              message: 'Erro ao criar conta' 
+            });
           }
 
-          const userId = this.lastID;
-          const token = jwt.sign({ userId, email }, JWT_SECRET, { expiresIn: '7d' });
-
-          res.json({
-            user: {
-              id: userId,
-              firstName,
-              lastName,
-              email,
-              phone,
-              createdAt: new Date().toISOString()
+          // Generate token
+          const token = jwt.sign(
+            { 
+              id: this.lastID, 
+              email, 
+              role: 'user' 
             },
-            token
+            process.env.JWT_SECRET || 'your-secret-key-change-this',
+            { expiresIn: '7d' }
+          );
+
+          res.status(201).json({
+            success: true,
+            token,
+            user: {
+              id: this.lastID,
+              email,
+              name,
+              role: 'user'
+            }
           });
         }
       );
     });
   } catch (error) {
-    res.status(500).json({ message: 'Erro interno do servidor' });
-  }
-});
-
-app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
-
-  db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
-    if (err) {
-      return res.status(500).json({ message: 'Erro interno do servidor' });
-    }
-
-    if (!user) {
-      return res.status(401).json({ message: 'Credenciais inválidas' });
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
-    if (!isValidPassword) {
-      return res.status(401).json({ message: 'Credenciais inválidas' });
-    }
-
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-
-    res.json({
-      user: {
-        id: user.id,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        email: user.email,
-        phone: user.phone,
-        createdAt: user.created_at
-      },
-      token
+    console.error('Register error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Erro ao criar conta' 
     });
-  });
+  }
 });
 
-app.get('/api/auth/verify', authenticateToken, (req, res) => {
-  db.get('SELECT * FROM users WHERE id = ?', [req.user.userId], (err, user) => {
-    if (err || !user) {
-      return res.status(401).json({ message: 'Usuário não encontrado' });
-    }
+// VERIFY TOKEN ROUTE
+app.get('/api/auth/verify', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
 
-    res.json({
-      id: user.id,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-      phone: user.phone,
-      createdAt: user.created_at
+  if (!token) {
+    return res.status(401).json({ 
+      success: false, 
+      message: 'Token não fornecido' 
     });
-  });
-});
-
-// Products routes
-app.get('/api/products', (req, res) => {
-  const { category, search, limit = 20, offset = 0 } = req.query;
-  
-  let query = 'SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.is_active = 1';
-  let params = [];
-
-  if (category) {
-    query += ' AND c.slug = ?';
-    params.push(category);
   }
 
-  if (search) {
-    query += ' AND (p.name LIKE ? OR p.description LIKE ?)';
-    params.push(`%${search}%`, `%${search}%`);
-  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-this');
 
-  query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
-  params.push(parseInt(limit), parseInt(offset));
-
-  db.all(query, params, (err, products) => {
-    if (err) {
-      return res.status(500).json({ message: 'Erro ao buscar produtos' });
-    }
-    res.json(products);
-  });
-});
-
-app.get('/api/products/:id', (req, res) => {
-  const { id } = req.params;
-  
-  db.get(
-    'SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = ? AND p.is_active = 1',
-    [id],
-    (err, product) => {
-      if (err) {
-        return res.status(500).json({ message: 'Erro ao buscar produto' });
-      }
-      if (!product) {
-        return res.status(404).json({ message: 'Produto não encontrado' });
-      }
-      res.json(product);
-    }
-  );
-});
-
-// Categories routes
-app.get('/api/categories', (req, res) => {
-  db.all('SELECT * FROM categories ORDER BY name', (err, categories) => {
-    if (err) {
-      return res.status(500).json({ message: 'Erro ao buscar categorias' });
-    }
-    res.json(categories);
-  });
-});
-
-// Cart routes
-app.get('/api/cart', authenticateToken, (req, res) => {
-  const query = `
-    SELECT ci.*, p.name, p.price, p.image_url, p.original_price, p.category_id, c.name as category_name
-    FROM cart_items ci
-    JOIN products p ON ci.product_id = p.id
-    LEFT JOIN categories c ON p.category_id = c.id
-    WHERE ci.user_id = ?
-  `;
-  
-  db.all(query, [req.user.userId], (err, items) => {
-    if (err) {
-      return res.status(500).json({ message: 'Erro ao buscar carrinho' });
-    }
-    res.json(items);
-  });
-});
-
-app.post('/api/cart', authenticateToken, (req, res) => {
-  const { productId, quantity } = req.body;
-  
-  // Check if item already exists in cart
-  db.get('SELECT * FROM cart_items WHERE user_id = ? AND product_id = ?', [req.user.userId, productId], (err, existingItem) => {
-    if (err) {
-      return res.status(500).json({ message: 'Erro interno do servidor' });
-    }
-
-    if (existingItem) {
-      // Update quantity
-      db.run(
-        'UPDATE cart_items SET quantity = quantity + ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ? AND product_id = ?',
-        [quantity, req.user.userId, productId],
-        (err) => {
-          if (err) {
-            return res.status(500).json({ message: 'Erro ao atualizar carrinho' });
-          }
-          res.json({ message: 'Item atualizado no carrinho' });
-        }
-      );
-    } else {
-      // Add new item
-      db.run(
-        'INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)',
-        [req.user.userId, productId, quantity],
-        (err) => {
-          if (err) {
-            return res.status(500).json({ message: 'Erro ao adicionar ao carrinho' });
-          }
-          res.json({ message: 'Item adicionado ao carrinho' });
-        }
-      );
-    }
-  });
-});
-
-app.put('/api/cart/:productId', authenticateToken, (req, res) => {
-  const { productId } = req.params;
-  const { quantity } = req.body;
-  
-  if (quantity <= 0) {
-    // Remove item
-    db.run('DELETE FROM cart_items WHERE user_id = ? AND product_id = ?', [req.user.userId, productId], (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'Erro ao remover item' });
-      }
-      res.json({ message: 'Item removido do carrinho' });
-    });
-  } else {
-    // Update quantity
-    db.run(
-      'UPDATE cart_items SET quantity = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ? AND product_id = ?',
-      [quantity, req.user.userId, productId],
-      (err) => {
-        if (err) {
-          return res.status(500).json({ message: 'Erro ao atualizar carrinho' });
-        }
-        res.json({ message: 'Carrinho atualizado' });
-      }
-    );
-  }
-});
-
-app.delete('/api/cart/:productId', authenticateToken, (req, res) => {
-  const { productId } = req.params;
-  
-  db.run('DELETE FROM cart_items WHERE user_id = ? AND product_id = ?', [req.user.userId, productId], (err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Erro ao remover item' });
-    }
-    res.json({ message: 'Item removido do carrinho' });
-  });
-});
-
-app.delete('/api/cart', authenticateToken, (req, res) => {
-  db.run('DELETE FROM cart_items WHERE user_id = ?', [req.user.userId], (err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Erro ao limpar carrinho' });
-    }
-    res.json({ message: 'Carrinho limpo' });
-  });
-});
-
-// Orders routes
-app.post('/api/orders', authenticateToken, (req, res) => {
-  const { items, totalAmount, shippingCost, shippingAddress, paymentMethod } = req.body;
-  
-  db.serialize(() => {
-    db.run('BEGIN TRANSACTION');
-    
-    // Create order
-    db.run(
-      'INSERT INTO orders (user_id, total_amount, shipping_cost, shipping_address, payment_method) VALUES (?, ?, ?, ?, ?)',
-      [req.user.userId, totalAmount, shippingCost, JSON.stringify(shippingAddress), paymentMethod],
-      function(err) {
-        if (err) {
-          db.run('ROLLBACK');
-          return res.status(500).json({ message: 'Erro ao criar pedido' });
-        }
-        
-        const orderId = this.lastID;
-        
-        // Add order items
-        const stmt = db.prepare('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)');
-        let completed = 0;
-        
-        items.forEach((item, index) => {
-          stmt.run([orderId, item.id, item.quantity, item.price], (err) => {
-            if (err) {
-              db.run('ROLLBACK');
-              return res.status(500).json({ message: 'Erro ao adicionar itens ao pedido' });
-            }
-            
-            completed++;
-            if (completed === items.length) {
-              stmt.finalize();
-              db.run('COMMIT');
-              
-              // Clear cart
-              db.run('DELETE FROM cart_items WHERE user_id = ?', [req.user.userId]);
-              
-              res.json({ orderId, message: 'Pedido criado com sucesso' });
-            }
-          });
+    db.get('SELECT id, email, name, role FROM users WHERE id = ?', [decoded.id], (err, user) => {
+      if (err || !user) {
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Usuário não encontrado' 
         });
       }
-    );
+
+      res.json({
+        success: true,
+        user
+      });
+    });
+  } catch (error) {
+    res.status(401).json({ 
+      success: false, 
+      message: 'Token inválido' 
+    });
+  }
+});
+
+// ================== PRODUCT ROUTES ==================
+
+// Get all products
+app.get('/api/products', (req, res) => {
+  db.all('SELECT * FROM products ORDER BY created_at DESC', (err, products) => {
+    if (err) {
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Erro ao buscar produtos' 
+      });
+    }
+    res.json({ success: true, products });
   });
 });
 
-app.get('/api/orders', authenticateToken, (req, res) => {
-  const query = `
-    SELECT o.*, 
-           GROUP_CONCAT(
-             json_object(
-               'id', oi.id,
-               'product_id', oi.product_id,
-               'quantity', oi.quantity,
-               'price', oi.price,
-               'name', p.name,
-               'image_url', p.image_url
-             )
-           ) as items
-    FROM orders o
-    LEFT JOIN order_items oi ON o.id = oi.order_id
-    LEFT JOIN products p ON oi.product_id = p.id
-    WHERE o.user_id = ?
-    GROUP BY o.id
-    ORDER BY o.created_at DESC
-  `;
-  
-  db.all(query, [req.user.userId], (err, orders) => {
+// Get product by ID
+app.get('/api/products/:id', (req, res) => {
+  const { id } = req.params;
+  db.get('SELECT * FROM products WHERE id = ?', [id], (err, product) => {
     if (err) {
-      return res.status(500).json({ message: 'Erro ao buscar pedidos' });
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Erro ao buscar produto' 
+      });
     }
-    
-    // Parse items JSON
-    orders.forEach(order => {
-      if (order.items) {
-        order.items = order.items.split(',').map(item => JSON.parse(item));
+    if (!product) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Produto não encontrado' 
+      });
+    }
+    res.json({ success: true, product });
+  });
+});
+
+// ================== CART ROUTES ==================
+
+// Middleware to check if user is authenticated
+function isAuthenticated(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Não autorizado' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-this');
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token inválido' });
+  }
+}
+
+// Get user cart
+app.get('/api/cart', isAuthenticated, (req, res) => {
+  db.all(`
+    SELECT c.*, p.name, p.price, p.image_url 
+    FROM cart c 
+    JOIN products p ON c.product_id = p.id 
+    WHERE c.user_id = ?
+  `, [req.user.id], (err, items) => {
+    if (err) {
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Erro ao buscar carrinho' 
+      });
+    }
+    res.json({ success: true, items });
+  });
+});
+
+// Add item to cart
+app.post('/api/cart', isAuthenticated, (req, res) => {
+  const { product_id, quantity = 1 } = req.body;
+
+  // Check if product exists
+  db.get('SELECT * FROM products WHERE id = ?', [product_id], (err, product) => {
+    if (err || !product) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Produto não encontrado' 
+      });
+    }
+
+    // Check if item already in cart
+    db.get('SELECT * FROM cart WHERE user_id = ? AND product_id = ?', 
+      [req.user.id, product_id], (err, existingItem) => {
+      if (err) {
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Erro ao verificar carrinho' 
+        });
+      }
+
+      if (existingItem) {
+        // Update quantity
+        db.run('UPDATE cart SET quantity = quantity + ? WHERE id = ?', 
+          [quantity, existingItem.id], (err) => {
+          if (err) {
+            return res.status(500).json({ 
+              success: false, 
+              message: 'Erro ao atualizar carrinho' 
+            });
+          }
+          res.json({ success: true, message: 'Item atualizado no carrinho' });
+        });
+      } else {
+        // Add new item
+        db.run('INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)', 
+          [req.user.id, product_id, quantity], (err) => {
+          if (err) {
+            return res.status(500).json({ 
+              success: false, 
+              message: 'Erro ao adicionar ao carrinho' 
+            });
+          }
+          res.json({ success: true, message: 'Item adicionado ao carrinho' });
+        });
       }
     });
-    
-    res.json(orders);
+  });
+});
+
+// ================== ADMIN ROUTES ==================
+
+// Middleware to check if user is admin
+function isAdmin(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Não autorizado' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-this');
+
+    if (decoded.role !== 'admin') {
+      return res.status(403).json({ message: 'Acesso negado - Admin apenas' });
+    }
+
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token inválido' });
+  }
+}
+
+// Admin Dashboard Stats
+app.get('/api/admin/stats', isAdmin, (req, res) => {
+  const stats = {};
+
+  // Get total users
+  db.get('SELECT COUNT(*) as total FROM users', (err, row) => {
+    stats.totalUsers = row.total;
+
+    // Get total orders
+    db.get('SELECT COUNT(*) as total FROM orders', (err, row) => {
+      stats.totalOrders = row.total || 0;
+      
+      // Get total revenue
+      db.get('SELECT SUM(total) as revenue FROM orders WHERE status = "completed"', (err, row) => {
+        stats.totalRevenue = row.revenue || 0;
+        
+        // Get total products
+        db.get('SELECT COUNT(*) as total FROM products', (err, row) => {
+          stats.totalProducts = row.total || 0;
+          
+          res.json({
+            success: true,
+            stats
+          });
+        });
+      });
+    });
+  });
+});
+
+// Get all users (admin only)
+app.get('/api/admin/users', isAdmin, (req, res) => {
+  db.all('SELECT id, email, name, role, created_at, last_login FROM users', (err, users) => {
+    if (err) {
+      return res.status(500).json({ message: 'Erro ao buscar usuários' });
+    }
+    res.json({ success: true, users });
+  });
+});
+
+// ================== TEST ROUTE ==================
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'Backend is running!', 
+    timestamp: new Date().toISOString() 
   });
 });
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Erro interno do servidor' });
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Backend is healthy',
+    timestamp: new Date().toISOString() 
+  });
 });
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-});
-
-// Graceful shutdown
-process.on('SIGINT', () => {
-  console.log('\n🛑 Encerrando servidor...');
-  db.close((err) => {
-    if (err) {
-      console.error('Erro ao fechar banco de dados:', err.message);
-    } else {
-      console.log('✅ Banco de dados fechado com sucesso');
-    }
-    process.exit(0);
-  });
+  console.log(`
+╔════════════════════════════════════════╗
+║                                        ║
+║  🚀 Server running on port ${PORT}        ║
+║  📡 API: http://localhost:${PORT}         ║
+║  🔐 Admin: arrkkhecorp@gmail.com       ║
+║                                        ║
+╚════════════════════════════════════════╝
+  `);
 });
