@@ -16,12 +16,6 @@ export default function Login() {
   const location = useLocation();
 
   // Redireciona se já estiver logado
-  useEffect(() => {
-    if (state.isAuthenticated) {
-      const from = location.state?.from?.pathname || '/account';
-      navigate(from, { replace: true });
-    }
-  }, [state.isAuthenticated, navigate, location.state]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,13 +29,24 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (state.isAuthenticated) {
+      // Redireciona baseado no role do usuário
+      if (state.user?.role === 'admin') {
+        navigate('/admin/dashboard', { replace: true });
+      } else {
+        const from = location.state?.from?.pathname || '/account';
+        navigate(from, { replace: true });
+      }
+    }
+  }, [state.isAuthenticated, state.user?.role, navigate, location.state?.from?.pathname]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await login(formData.email, formData.password);
-      // Redireciona para a página de origem ou para /account
-      const from = location.state?.from?.pathname || '/account';
-      navigate(from, { replace: true });
+      // O redirecionamento será feito baseado no role do usuário
+      // Admin vai para /admin/dashboard, usuário comum para /account
     } catch (error) {
       // Error is handled by the context
     }

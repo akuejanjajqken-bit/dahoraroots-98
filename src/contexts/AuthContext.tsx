@@ -4,10 +4,10 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 export interface User {
   id: number;
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  role: string;
   phone?: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 interface AuthState {
@@ -111,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           dispatch({ type: 'AUTH_START' });
           
-          const response = await fetch('http://localhost:3000/api/auth/profile', {
+          const response = await fetch('http://localhost:5000/api/auth/verify', {
             headers: {
               'Authorization': `Bearer ${token}`,
             },
@@ -119,14 +119,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           if (response.ok) {
             const result = await response.json();
-            const user = result.data.user;
+            const user = result.user;
             
-            // Transformar dados do backend para o formato esperado pelo frontend
+            // Usar dados do novo backend
             const frontendUser = {
               id: user.id,
               email: user.email,
-              firstName: user.nome_completo.split(' ')[0],
-              lastName: user.nome_completo.split(' ').slice(1).join(' '),
+              name: user.name,
+              role: user.role,
               phone: user.telefone,
               createdAt: user.created_at
             };
@@ -150,27 +150,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       dispatch({ type: 'AUTH_START' });
       
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, senha: password }),
+        body: JSON.stringify({ email, password }),
       });
       
       if (response.ok) {
         const result = await response.json();
-        const { user, token } = result.data;
+        const { user, token } = result;
         localStorage.setItem('dahora-roots-token', token);
         
-        // Transformar dados do backend para o formato esperado pelo frontend
+        // Usar dados do novo backend
         const frontendUser = {
           id: user.id,
           email: user.email,
-          firstName: user.nome_completo.split(' ')[0],
-          lastName: user.nome_completo.split(' ').slice(1).join(' '),
-          phone: user.telefone,
-          createdAt: user.created_at
+          name: user.name,
+          role: user.role,
         };
         
         dispatch({ type: 'AUTH_SUCCESS', payload: frontendUser });
@@ -188,17 +186,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       dispatch({ type: 'AUTH_START' });
       
-      // Transformar dados do frontend para o formato esperado pelo backend
+      // Usar dados do novo backend
       const backendData = {
-        nome_completo: `${userData.firstName} ${userData.lastName}`,
+        name: `${userData.firstName} ${userData.lastName}`,
         email: userData.email,
-        senha: userData.password,
-        telefone: userData.phone || null,
-        termos_aceitos: true,
-        newsletter: false
+        password: userData.password,
+        phone: userData.phone || null,
       };
       
-      const response = await fetch('http://localhost:3000/api/auth/register', {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -208,17 +204,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (response.ok) {
         const result = await response.json();
-        const { user, token } = result.data;
+        const { user, token } = result;
         localStorage.setItem('dahora-roots-token', token);
         
-        // Transformar dados do backend para o formato esperado pelo frontend
+        // Usar dados do novo backend
         const frontendUser = {
           id: user.id,
           email: user.email,
-          firstName: user.nome_completo.split(' ')[0],
-          lastName: user.nome_completo.split(' ').slice(1).join(' '),
-          phone: user.telefone,
-          createdAt: user.created_at
+          name: user.name,
+          role: user.role,
         };
         
         dispatch({ type: 'AUTH_SUCCESS', payload: frontendUser });

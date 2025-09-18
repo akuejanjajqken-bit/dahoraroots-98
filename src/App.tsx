@@ -16,6 +16,7 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
+import AdminDashboard from "./pages/AdminDashboard";
 import ButtonDemo from "./pages/ButtonDemo";
 import HeaderDemo from "./pages/HeaderDemo";
 import NotFound from "./pages/NotFound";
@@ -60,6 +61,13 @@ const App = () => (
               <Route path="/account" element={
                 <ProtectedRoute>
                   <Account />
+                </ProtectedRoute>
+              } />
+              
+              {/* Admin Routes */}
+              <Route path="/admin/dashboard" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboard />
                 </ProtectedRoute>
               } />
               
