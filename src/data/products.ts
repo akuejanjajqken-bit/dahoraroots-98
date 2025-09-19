@@ -19,7 +19,7 @@ export interface Category {
   products: Product[];
 }
 
-// Mock products organized by category
+// Mock products organized by category - will be replaced by Supabase data
 export const categoriesData: Category[] = [
   {
     name: "Blunts",
@@ -33,7 +33,7 @@ export const categoriesData: Category[] = [
         description: "Blunts artesanais de tabaco natural com sabores únicos",
         price: 45.99,
         originalPrice: 59.99,
-        image: "/api/placeholder/300/300",
+        image: "/src/assets/blunts-tabaco-hero.jpg",
         category: "Blunts",
         rating: 4.9,
         reviews: 127,
@@ -45,7 +45,7 @@ export const categoriesData: Category[] = [
         description: "Kit com todos os acessórios essenciais para começar",
         price: 199.99,
         originalPrice: 249.99,
-        image: "/api/placeholder/300/300",
+        image: "/src/assets/kit-exclusivo-1.jpg",
         category: "Blunts",
         rating: 4.8,
         reviews: 156,
@@ -56,7 +56,7 @@ export const categoriesData: Category[] = [
         name: "Slap Woods Wraps",
         description: "Wraps premium com sabor natural de tabaco",
         price: 35.99,
-        image: "/api/placeholder/300/300",
+        image: "/src/assets/slapwoods-wraps.jpg",
         category: "Blunts",
         rating: 4.7,
         reviews: 89,
@@ -75,21 +75,11 @@ export const categoriesData: Category[] = [
         name: "Coleção Sadhu Completa",
         description: "Produtos exclusivos da marca Sadhu para experiências autênticas",
         price: 189.99,
-        image: "/api/placeholder/300/300",
+        image: "/src/assets/sadhu-products.jpg",
         category: "Cases",
         rating: 4.8,
         reviews: 89,
         badge: "Novo"
-      },
-      {
-        id: '5',
-        name: "Case Protetor Sadhu",
-        description: "Case resistente com design único da Sadhu",
-        price: 89.99,
-        image: "/api/placeholder/300/300",
-        category: "Cases",
-        rating: 4.5,
-        reviews: 92
       }
     ]
   },
@@ -105,7 +95,7 @@ export const categoriesData: Category[] = [
         description: "Dixavadores únicos para uma experiência diferenciada",
         price: 24.99,
         originalPrice: 29.99,
-        image: "/api/placeholder/300/300",
+        image: "/src/assets/dixavadores-collection.webp",
         category: "Trituradores",
         rating: 4.7,
         reviews: 234
@@ -116,65 +106,11 @@ export const categoriesData: Category[] = [
         description: "Triturador elétrico com potência e praticidade",
         price: 129.99,
         originalPrice: 159.99,
-        image: "/api/placeholder/300/300",
+        image: "/src/assets/triturador-eletrico-hero.png",
         category: "Trituradores",
         rating: 4.6,
         reviews: 78,
         badge: "Lançamento"
-      }
-    ]
-  },
-  {
-    name: "Acendedores",
-    slug: "acendedores",
-    description: "Acendedores e isqueiros de qualidade premium",
-    iconName: "Star",
-    products: [
-      {
-        id: '8',
-        name: "Isqueiro Clipper Premium",
-        description: "Isqueiro refilável com design clássico",
-        price: 19.99,
-        image: "/api/placeholder/300/300",
-        category: "Acendedores",
-        rating: 4.5,
-        reviews: 156
-      }
-    ]
-  },
-  {
-    name: "Sedas",
-    slug: "sedas",
-    description: "Papéis de enrolar de alta qualidade e diferentes tamanhos",
-    iconName: "Package",
-    products: [
-      {
-        id: '9',
-        name: "Sedas Premium",
-        description: "Papéis de enrolar de alta qualidade",
-        price: 12.99,
-        image: "/api/placeholder/300/300",
-        category: "Sedas",
-        rating: 4.4,
-        reviews: 89
-      }
-    ]
-  },
-  {
-    name: "Filtros Piteiras",
-    slug: "filtros-piteiras",
-    description: "Filtros e piteiras de papel para uma experiência mais suave",
-    iconName: "Droplets",
-    products: [
-      {
-        id: '10',
-        name: "Piteiras de Papel Premium",
-        description: "Piteiras de papel de alta qualidade",
-        price: 8.99,
-        image: "/api/placeholder/300/300",
-        category: "Filtros Piteiras",
-        rating: 4.3,
-        reviews: 67
       }
     ]
   },
@@ -189,101 +125,10 @@ export const categoriesData: Category[] = [
         name: "Piteiras de Vidro Artesanais",
         description: "Piteiras de vidro borossilicato feitas à mão por artesãos",
         price: 79.99,
-        image: "/api/placeholder/300/300",
+        image: "/src/assets/piteiras-vidro.jpg",
         category: "Piteiras de Vidro",
         rating: 4.9,
         reviews: 156,
-        badge: "Premium"
-      }
-    ]
-  },
-  {
-    name: "Cuias",
-    slug: "cuias",
-    description: "Cuias e bowls de diferentes materiais e designs",
-    iconName: "Heart",
-    products: [
-      {
-        id: '12',
-        name: "Cuias de Vidro Premium",
-        description: "Cuias de vidro borossilicato com design único",
-        price: 65.99,
-        image: "/api/placeholder/300/300",
-        category: "Cuias",
-        rating: 4.6,
-        reviews: 98
-      }
-    ]
-  },
-  {
-    name: "Tesouras",
-    slug: "tesouras",
-    description: "Tesouras especiais para triturar com precisão",
-    iconName: "Scissors",
-    products: [
-      {
-        id: '13',
-        name: "Tesouras Premium",
-        description: "Tesouras afiadas com design ergonômico",
-        price: 25.99,
-        image: "/api/placeholder/300/300",
-        category: "Tesouras",
-        rating: 4.4,
-        reviews: 45
-      }
-    ]
-  },
-  {
-    name: "Potes",
-    slug: "potes",
-    description: "Potes herméticos para armazenamento seguro",
-    iconName: "Package",
-    products: [
-      {
-        id: '14',
-        name: "Potes Herméticos Premium",
-        description: "Potes herméticos com vedação perfeita",
-        price: 35.99,
-        image: "/api/placeholder/300/300",
-        category: "Potes",
-        rating: 4.5,
-        reviews: 78
-      }
-    ]
-  },
-  {
-    name: "Cinzeiros",
-    slug: "cinzeiros",
-    description: "Cinzeiros e porta-cinzas com design moderno",
-    iconName: "Clock",
-    products: [
-      {
-        id: '15',
-        name: "Cinzeiros Modernos",
-        description: "Cinzeiros com design contemporâneo",
-        price: 45.99,
-        image: "/api/placeholder/300/300",
-        category: "Cinzeiros",
-        rating: 4.3,
-        reviews: 34
-      }
-    ]
-  },
-  {
-    name: "Reservatório",
-    slug: "reservatorio",
-    description: "Reservatórios e bongs de diferentes tamanhos",
-    iconName: "Droplets",
-    products: [
-      {
-        id: '16',
-        name: "Bong Premium",
-        description: "Bong de vidro borossilicato com percolador",
-        price: 199.99,
-        image: "/api/placeholder/300/300",
-        category: "Reservatório",
-        rating: 4.7,
-        reviews: 123,
         badge: "Premium"
       }
     ]

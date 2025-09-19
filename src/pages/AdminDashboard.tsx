@@ -77,7 +77,7 @@ export default function AdminDashboard() {
                 Admin <span className="text-gradient-sunset">Dashboard</span>
               </h1>
               <p className="text-sm text-muted-foreground font-urban">
-                Bem-vindo, {state.user?.name}
+                Bem-vindo, {state.profile?.name || state.user?.email}
               </p>
             </div>
             <button

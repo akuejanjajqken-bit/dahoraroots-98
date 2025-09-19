@@ -1,95 +1,36 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
 // Types
-export interface User {
-  id: number;
-  email: string;
-  name: string;
-  role: string;
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  name?: string;
   phone?: string;
-  createdAt?: string;
+  cpf?: string;
+  role?: string;
+  created_at: string;
+  last_login?: string;
 }
 
 interface AuthState {
   user: User | null;
+  session: Session | null;
+  profile: UserProfile | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
 }
 
-type AuthAction =
-  | { type: 'AUTH_START' }
-  | { type: 'AUTH_SUCCESS'; payload: User }
-  | { type: 'AUTH_FAILURE'; payload: string }
-  | { type: 'LOGOUT' }
-  | { type: 'CLEAR_ERROR' };
-
-// Initial state
-const initialState: AuthState = {
-  user: null,
-  isAuthenticated: false,
-  isLoading: false,
-  error: null,
-};
-
-// Reducer
-function authReducer(state: AuthState, action: AuthAction): AuthState {
-  switch (action.type) {
-    case 'AUTH_START':
-      return {
-        ...state,
-        isLoading: true,
-        error: null,
-      };
-    
-    case 'AUTH_SUCCESS':
-      return {
-        ...state,
-        user: action.payload,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      };
-    
-    case 'AUTH_FAILURE':
-      return {
-        ...state,
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: action.payload,
-      };
-    
-    case 'LOGOUT':
-      return {
-        ...state,
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      };
-    
-    case 'CLEAR_ERROR':
-      return {
-        ...state,
-        error: null,
-      };
-    
-    default:
-      return state;
-  }
+interface AuthContextType {
+  state: AuthState;
+  login: (email: string, password: string) => Promise<{ error?: string }>;
+  register: (userData: RegisterData) => Promise<{ error?: string }>;
+  logout: () => Promise<void>;
+  clearError: () => void;
 }
 
-// Context
-const AuthContext = createContext<{
-  state: AuthState;
-  login: (email: string, password: string) => Promise<void>;
-  register: (userData: RegisterData) => Promise<void>;
-  logout: () => void;
-  clearError: () => void;
-} | null>(null);
-
-// Types for registration
 export interface RegisterData {
   firstName: string;
   lastName: string;
@@ -97,142 +38,196 @@ export interface RegisterData {
   password: string;
   confirmPassword?: string;
   phone?: string;
+  cpf?: string;
 }
 
-// Provider
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(authReducer, initialState);
+const AuthContext = createContext<AuthContextType | null>(null);
 
-  // Check for existing session on mount
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [state, setState] = useState<AuthState>({
+    user: null,
+    session: null,
+    profile: null,
+    isAuthenticated: false,
+    isLoading: true,
+    error: null,
+  });
+
+  const setLoading = (loading: boolean) => {
+    setState(prev => ({ ...prev, isLoading: loading }));
+  };
+
+  const setError = (error: string | null) => {
+    setState(prev => ({ ...prev, error }));
+  };
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      // Fetch profile
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
+        return null;
+      }
+
+      // Fetch role
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .single();
+
+      if (roleError) {
+        console.error('Error fetching role:', roleError);
+      }
+
+      return {
+        ...profile,
+        role: roleData?.role || 'user'
+      };
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
+  };
+
+  const updateAuthState = async (session: Session | null) => {
+    if (session?.user) {
+      const profile = await fetchUserProfile(session.user.id);
+      setState(prev => ({
+        ...prev,
+        user: session.user,
+        session,
+        profile,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      }));
+    } else {
+      setState(prev => ({
+        ...prev,
+        user: null,
+        session: null,
+        profile: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      }));
+    }
+  };
+
+  // Initialize auth state
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('dahora-roots-token');
-      if (token) {
-        try {
-          dispatch({ type: 'AUTH_START' });
-          
-          const response = await fetch('http://localhost:5000/api/auth/verify', {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          });
-          
-          if (response.ok) {
-            const result = await response.json();
-            const user = result.user;
-            
-            // Usar dados do novo backend
-            const frontendUser = {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              role: user.role,
-              phone: user.telefone,
-              createdAt: user.created_at
-            };
-            
-            dispatch({ type: 'AUTH_SUCCESS', payload: frontendUser });
-          } else {
-            localStorage.removeItem('dahora-roots-token');
-            dispatch({ type: 'AUTH_FAILURE', payload: 'Sessão expirada' });
-          }
-        } catch (error) {
-          localStorage.removeItem('dahora-roots-token');
-          dispatch({ type: 'AUTH_FAILURE', payload: 'Erro ao verificar autenticação' });
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event);
+        await updateAuthState(session);
+        
+        // Update last login on sign in
+        if (event === 'SIGNED_IN' && session?.user) {
+          supabase
+            .from('profiles')
+            .update({ last_login: new Date().toISOString() })
+            .eq('user_id', session.user.id)
+            .then(({ error }) => {
+              if (error) console.error('Error updating last login:', error);
+            });
         }
       }
-    };
+    );
 
-    checkAuth();
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      updateAuthState(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      dispatch({ type: 'AUTH_START' });
-      
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      setLoading(true);
+      setError(null);
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      
-      if (response.ok) {
-        const result = await response.json();
-        const { user, token } = result;
-        localStorage.setItem('dahora-roots-token', token);
-        
-        // Usar dados do novo backend
-        const frontendUser = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
-        
-        dispatch({ type: 'AUTH_SUCCESS', payload: frontendUser });
-      } else {
-        const error = await response.json();
-        dispatch({ type: 'AUTH_FAILURE', payload: error.message || 'Erro ao fazer login' });
+
+      if (error) {
+        setError(error.message);
+        return { error: error.message };
       }
+
+      return {};
     } catch (error) {
-      console.error('Erro no login:', error);
-      dispatch({ type: 'AUTH_FAILURE', payload: 'Erro de conexão. Verifique se o servidor está rodando.' });
+      const errorMessage = 'Erro ao fazer login. Tente novamente.';
+      setError(errorMessage);
+      return { error: errorMessage };
+    } finally {
+      setLoading(false);
     }
   };
 
   const register = async (userData: RegisterData) => {
     try {
-      dispatch({ type: 'AUTH_START' });
+      setLoading(true);
+      setError(null);
+
+      const fullName = `${userData.firstName} ${userData.lastName}`;
       
-      // Usar dados do novo backend
-      const backendData = {
-        name: `${userData.firstName} ${userData.lastName}`,
+      const { error } = await supabase.auth.signUp({
         email: userData.email,
         password: userData.password,
-        phone: userData.phone || null,
-      };
-      
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(backendData),
+        options: {
+          data: {
+            name: fullName,
+            phone: userData.phone,
+            cpf: userData.cpf,
+          },
+          emailRedirectTo: `${window.location.origin}/`
+        }
       });
-      
-      if (response.ok) {
-        const result = await response.json();
-        const { user, token } = result;
-        localStorage.setItem('dahora-roots-token', token);
-        
-        // Usar dados do novo backend
-        const frontendUser = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
-        
-        dispatch({ type: 'AUTH_SUCCESS', payload: frontendUser });
-      } else {
-        const error = await response.json();
-        dispatch({ type: 'AUTH_FAILURE', payload: error.message || 'Erro ao criar conta' });
+
+      if (error) {
+        setError(error.message);
+        return { error: error.message };
       }
+
+      return {};
     } catch (error) {
-      console.error('Erro no registro:', error);
-      dispatch({ type: 'AUTH_FAILURE', payload: 'Erro de conexão. Verifique se o servidor está rodando.' });
+      const errorMessage = 'Erro ao criar conta. Tente novamente.';
+      setError(errorMessage);
+      return { error: errorMessage };
+    } finally {
+      setLoading(false);
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('dahora-roots-token');
-    dispatch({ type: 'LOGOUT' });
+  const logout = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Error signing out:', error);
+        setError(error.message);
+      }
+    } catch (error) {
+      console.error('Error signing out:', error);
+      setError('Erro ao fazer logout');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const clearError = () => {
-    dispatch({ type: 'CLEAR_ERROR' });
+    setError(null);
   };
 
   return (
@@ -250,7 +245,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Hook
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {

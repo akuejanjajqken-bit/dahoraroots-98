@@ -51,11 +51,11 @@ export default function Account() {
               <div className="text-center mb-6">
                 <div className="w-20 h-20 bg-gradient-to-br from-tangerine to-sunset-orange rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-white font-bold text-2xl">
-                    {state.user?.name?.[0]?.toUpperCase()}
+                    {state.profile?.name?.[0]?.toUpperCase() || state.user?.email?.[0]?.toUpperCase()}
                   </span>
                 </div>
                 <h2 className="font-semibold text-lg text-nile-blue">
-                  {state.user?.name}
+                  {state.profile?.name || state.user?.email}
                 </h2>
                 <p className="text-sm text-gray-500">{state.user?.email}</p>
               </div>
@@ -113,7 +113,7 @@ export default function Account() {
                         <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                           <User className="h-5 w-5 text-gray-400" />
                           <span className="text-gray-900">
-                            {state.user?.name}
+                            {state.profile?.name || state.user?.email}
                           </span>
                         </div>
                       </div>
@@ -148,7 +148,7 @@ export default function Account() {
                         </label>
                         <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                           <span className="text-gray-900">
-                            {new Date(state.user?.createdAt || '').toLocaleDateString('pt-BR')}
+                            {new Date(state.profile?.created_at || state.user?.created_at || '').toLocaleDateString('pt-BR')}
                           </span>
                         </div>
                       </div>
