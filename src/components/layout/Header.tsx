@@ -163,7 +163,7 @@ export default function Header() {
                       <>
                         <div className="px-4 py-2 border-b border-white/10">
                           <p className="text-sm font-semibold text-foreground">
-                            {authState.user?.firstName} {authState.user?.lastName}
+                            {authState.user?.name}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             {authState.user?.email}
