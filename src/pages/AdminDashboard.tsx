@@ -2,13 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Users, ShoppingCart, Package, DollarSign, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { adminService, type AdminStats } from '@/services/admin';
 
-interface AdminStats {
-  totalUsers: number;
-  totalOrders: number;
-  totalProducts: number;
-  totalRevenue: number;
-}
 
 export default function AdminDashboard() {
   const { state, logout } = useAuth();
@@ -22,26 +17,22 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (state.user?.role !== 'admin') {
+    if (!state.profile?.role || state.profile.role !== 'admin') {
       navigate('/');
       return;
     }
 
     fetchStats();
-  }, [state.user, navigate]);
+  }, [state.profile?.role, navigate]);
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('dahora-roots-token');
-      const response = await fetch('http://localhost:5000/api/admin/stats', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setStats(result.stats);
+      const { data, error } = await adminService.getStats();
+      
+      if (error) {
+        console.error('Erro ao buscar estatísticas:', error);
+      } else if (data) {
+        setStats(data);
       }
     } catch (error) {
       console.error('Erro ao buscar estatísticas:', error);
