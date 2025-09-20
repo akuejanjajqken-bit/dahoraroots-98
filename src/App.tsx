@@ -16,7 +16,8 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./pages/admin/Dashboard";
+import CustomerDashboard from "./pages/customer/Dashboard";
 import ButtonDemo from "./pages/ButtonDemo";
 import HeaderDemo from "./pages/HeaderDemo";
 import NotFound from "./pages/NotFound";
@@ -68,6 +69,13 @@ const App = () => (
               <Route path="/admin/dashboard" element={
                 <ProtectedRoute requiredRole="admin">
                   <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              
+              {/* Customer Dashboard */}
+              <Route path="/customer/dashboard" element={
+                <ProtectedRoute>
+                  <CustomerDashboard />
                 </ProtectedRoute>
               } />
               
