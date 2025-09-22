@@ -46,6 +46,53 @@ export type Database = {
           },
         ]
       }
+      coupons: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          current_uses: number
+          discount_percentage: number
+          id: string
+          max_uses: number
+          product_id: string | null
+          updated_at: string
+          valid_until: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          current_uses?: number
+          discount_percentage: number
+          id?: string
+          max_uses?: number
+          product_id?: string | null
+          updated_at?: string
+          valid_until: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          current_uses?: number
+          discount_percentage?: number
+          id?: string
+          max_uses?: number
+          product_id?: string | null
+          updated_at?: string
+          valid_until?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string
@@ -169,6 +216,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      use_coupon: {
+        Args: { coupon_code: string }
+        Returns: Json
       }
     }
     Enums: {

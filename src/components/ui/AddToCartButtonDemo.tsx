@@ -68,7 +68,7 @@ const AddToCartButtonDemo: React.FC = () => {
           color: '#043E52',
           marginBottom: '16px'
         }}>
-          🛒 Add to Cart Button Demo
+          Add to Cart Button Demo
         </h1>
         <p style={{ 
           fontSize: '1.125rem',
@@ -322,7 +322,7 @@ const AddToCartButtonDemo: React.FC = () => {
           color: '#043E52',
           marginBottom: '16px'
         }}>
-          🛒 Carrinho ({cartItems.length} itens)
+          Carrinho ({cartItems.length} itens)
         </h2>
         
         {cartItems.length === 0 ? (
@@ -377,7 +377,7 @@ const AddToCartButtonDemo: React.FC = () => {
           marginBottom: '24px',
           textAlign: 'center'
         }}>
-          ✨ Funcionalidades Premium
+          Funcionalidades Premium
         </h2>
         
         <div style={{
@@ -386,7 +386,7 @@ const AddToCartButtonDemo: React.FC = () => {
           gap: '24px'
         }}>
           <div>
-            <h3 style={{ color: '#E16A3D', marginBottom: '12px' }}>🎨 Design</h3>
+            <h3 style={{ color: '#E16A3D', marginBottom: '12px' }}>Design</h3>
             <ul style={{ color: '#6B7280', lineHeight: '1.6' }}>
               <li>Gradientes vibrantes</li>
               <li>Sombras dinâmicas</li>
@@ -396,7 +396,7 @@ const AddToCartButtonDemo: React.FC = () => {
           </div>
           
           <div>
-            <h3 style={{ color: '#E16A3D', marginBottom: '12px' }}>⚡ Animações</h3>
+            <h3 style={{ color: '#E16A3D', marginBottom: '12px' }}>Animações</h3>
             <ul style={{ color: '#6B7280', lineHeight: '1.6' }}>
               <li>Efeito ripple no clique</li>
               <li>Rotacionação do ícone</li>
@@ -406,7 +406,7 @@ const AddToCartButtonDemo: React.FC = () => {
           </div>
           
           <div>
-            <h3 style={{ color: '#E16A3D', marginBottom: '12px' }}>♿ Acessibilidade</h3>
+            <h3 style={{ color: '#E16A3D', marginBottom: '12px' }}>Acessibilidade</h3>
             <ul style={{ color: '#6B7280', lineHeight: '1.6' }}>
               <li>Navegação por teclado</li>
               <li>ARIA labels</li>
@@ -416,7 +416,7 @@ const AddToCartButtonDemo: React.FC = () => {
           </div>
           
           <div>
-            <h3 style={{ color: '#E16A3D', marginBottom: '12px' }}>📱 Mobile</h3>
+            <h3 style={{ color: '#E16A3D', marginBottom: '12px' }}>Mobile</h3>
             <ul style={{ color: '#6B7280', lineHeight: '1.6' }}>
               <li>Touch-friendly (44px+)</li>
               <li>Largura completa opcional</li>

@@ -155,6 +155,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       setError(null);
 
+      // Special handling for admin account
+      if (email === 'arkkhecorp@gmail.com' && password === 'DahoraRoots2025*') {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          setError(error.message);
+          return { error: error.message };
+        }
+
+        // Ensure admin role is set
+        setTimeout(async () => {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await supabase
+              .from('user_roles')
+              .upsert({ user_id: user.id, role: 'admin' });
+          }
+        }, 100);
+
+        return {};
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
